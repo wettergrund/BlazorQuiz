@@ -13,5 +13,10 @@ namespace BlazorQuiz.Server.Data
             IOptions<OperationalStoreOptions> operationalStoreOptions) : base(options, operationalStoreOptions)
         {
         }
+        public DbSet<QuizModel> Quizzes { get; set; }
+        public DbSet<UserQuizModel> UserQuizModels { get; set; }
+        public DbSet<QuestionModel> QuestionModels { get; set; }
+        public DbSet<MediaModel> MediaModels { get; set; }
+
     }
 }
