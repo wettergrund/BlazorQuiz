@@ -1,18 +1,32 @@
 ﻿@inherits LayoutComponentBase
 
-<div class="page">
+<MudThemeProvider/>
+<MudDialogProvider/>
+<MudSnackbarProvider/>
+
+<MudLayout>
+    <MudAppBar Color="Color.Primary">
+        <MudSpacer />
+        <LoginDisplay />
+    </MudAppBar>
+    <MudMainContent>
+            @Body
+    </MudMainContent>
+</MudLayout>
+
+@* <div class="page">
     <div class="sidebar">
-        <NavMenu />
+        <navmenu />
     </div>
 
     <main>
         <div class="top-row px-4 auth">
-            <LoginDisplay />
-            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+            <logindisplay />
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">about</a>
         </div>
 
         <article class="content px-4">
             @Body
         </article>
     </main>
-</div>
+</div> *@

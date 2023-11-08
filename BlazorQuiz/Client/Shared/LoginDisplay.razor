@@ -6,12 +6,16 @@
 
 <AuthorizeView>
     <Authorized>
-        <a href="authentication/profile">Hello, @context.User.Identity?.Name!</a>
-        <button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>
+        <MudLink Href="/game" Color=Color.Inherit Underline="Underline.None">Play</MudLink>
+        <MudSpacer />
+        <MudLink Href="authentication/profile" Color=Color.Inherit Underline="Underline.None">Hello, @context.User.Identity?.Name!</MudLink>
+        @* <a href="authentication/profile">Hello, @context.User.Identity?.Name!</a> *@
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="BeginSignOut">Log out</MudButton>
+        @* <button class="nav-link btn btn-link" @onclick="BeginSignOut">Log out</button>  *@     
     </Authorized>
-    <NotAuthorized>
-        <a href="authentication/register">Register</a>
-        <a href="authentication/login">Log in</a>
+    <NotAuthorized>    
+        <MudLink Color=Color.Inherit Underline="Underline.None" Href=" authentication /register">Register</MudLink>
+        <MudLink Color=Color.Inherit Underline="Underline.None" Href=" authentication /login">Log in</MudLink>
     </NotAuthorized>
 </AuthorizeView>
 

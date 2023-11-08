@@ -1,0 +1,63 @@
+﻿@page "/createquiz"
+@using MudBlazor
+@using System.Text.Json;
+@using System.Text;
+@using System.Net.Http.Headers;
+@using Models
+@inject NavigationManager _navigationManager
+@inject HttpClient Http
+@inject ILocalStorageService _localStorageService
+
+
+
+<div class="ma-5 d-flex justify-center">
+    <MudPaper Width="500px" Class="pa-4">
+        <MudText Typo="Typo.h5">Create New Quiz</MudText>
+        <MudForm Model="quiz">
+            @*  <MudTextField T="Guid" Label="Id" @bind-Value="newRegion.Id" For="@(() => newRegion.Id)" /> *@
+            <MudTextField T="string" Label="Question" @bind-Value="quiz.Question" For="@(() => quiz.Question)" />
+            <MudTextField T="string" Label="Answer 1" @bind-Value="quiz.Answer1" For="@(() => quiz.Answer1)" />
+            <MudTextField T="string" Label="Answer 2" @bind-Value="quiz.Answer2" For="@(() => quiz.Answer2)" />
+            <MudTextField T="string" Label="Answer 3" @bind-Value="quiz.Answer3" For="@(() => quiz.Answer3)" />
+            <MudTextField T="string" Label="Answer 4" @bind-Value="quiz.Answer4" For="@(() => quiz.Answer4)" />
+            <MudTextField T="string" Label="Correct Answer" @bind-Value="quiz.CorrectAnswer" For="@(() => quiz.CorrectAnswer)" />
+            <MudTextField T="string" Label="Image Url" @bind-Value="quiz.QuizImageUrl" For="@(() => quiz.QuizImageUrl)" />
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateQuizModel">Create Region</MudButton>
+        </MudForm>
+    </MudPaper>
+</div>
+
+@code{
+    private QuizModel quiz = new QuizModel();
+
+    private async Task CreateQuizModel()
+    {
+        try
+        {
+            var token = await _localStorageService.GetItemAsync<string>("JwtToken");
+            Http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            // Replace with your actual API endpoint
+            var response = await Http.PostAsJsonAsync("api/createquiz", quiz);
+
+            if (response.IsSuccessStatusCode)
+            {
+                // var jsonContent = JsonSerializer.Serialize(newRegion);
+                // var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                // // Send a POST request to the specified Uri with the given content
+                // var answer = await Http.PostAsync("api/regions", content);
+                _navigationManager.NavigateTo("/");
+            }
+            else
+            {
+                // Handle the error, possibly displaying a message to the user
+
+            }
+        }
+        catch (Exception ex)
+        {
+            // Handle any exceptions that occur during the HTTP request
+
+        }
+    }
+}
