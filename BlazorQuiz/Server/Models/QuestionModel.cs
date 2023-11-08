@@ -1,10 +1,22 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using BlazorQuiz.Shared.ViewModels;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BlazorQuiz.Server.Models
 {
     public class QuestionModel
     {
+
+        public QuestionModel() { }
+        public QuestionModel(NewQuestionViewModel input)
+        {
+            Question = input.Question;
+            Answer1 = input.Answer1;
+            Answer2 = input.Answer2;
+            Answer3 = input.Answer3;
+            Answer4 = input.Answer4;
+        }
+
         [Key]
         public int Id { get; set; }
         public string Question { get; set; }
