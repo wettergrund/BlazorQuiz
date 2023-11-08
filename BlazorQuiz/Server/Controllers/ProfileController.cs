@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using BlazorQuiz.Server.Data;
+using System.Security.Claims;
 
 namespace BlazorQuiz.Server.Controllers
 {
@@ -8,19 +10,37 @@ namespace BlazorQuiz.Server.Controllers
     [ApiController]
     public class ProfileController : ControllerBase
     {
-        [HttpGet("games")]
+        private readonly ApplicationDbContext _context;
+        private readonly DbHelper _dbHelper;
+
+        public ProfileController(ApplicationDbContext context)
+        {
+            _context = context;
+            _dbHelper = new DbHelper(context); ;
+        }
+
+        [HttpGet("mygames")]
         public IActionResult GetUserGames()
         {
             // Return games related to userId (Use identity to fetch ID)
 
-            return Ok();
+            //Get user ID
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //Get user ID from header
+
+            var userGames = _context.UserQuizModels.Where(q => q.UserRefId == userId).ToList();
+
+
+            return Ok(userGames);
         }
-        [HttpGet("mygames")]
+        [HttpGet("myquizzes")]
         public IActionResult GetCreatedGames(int id)
         {
             // Return quizes created by user (Use identity to fetch ID)
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //Get user ID from header
 
-            return Ok();
+            var userQuizzes = _context.Quizzes.Where(q => q.UserRefId == userId).ToList();
+
+            return Ok(userQuizzes);
         }
     }
 }
