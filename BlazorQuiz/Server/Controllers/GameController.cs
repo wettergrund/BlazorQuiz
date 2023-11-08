@@ -20,10 +20,19 @@ namespace BlazorQuiz.Server.Controllers
             _dbHelper = new DbHelper(context); ;
         }
         [HttpGet("{id}")]
-        public IActionResult GetGame(int id)
+        public IActionResult GetUserQuiz(int id)
         {
             // Get a specific game
-            return Ok();
+
+            //Get a game
+            var userquiz = _context.UserQuizModels.Where(game => game.Id == id).FirstOrDefault();
+
+            var quizId = userquiz.QuizRefId;
+
+            //Find the quiz
+            var game = _context.Quizzes.Where(q => q.Id == quizId).FirstOrDefault();
+
+            return Ok(new { userquiz , game });
         }
         [HttpPost("create/{title}")]
         public IActionResult PostQuiz(string title, [FromBody] List<NewQuestionViewModel> questions, int seconds = 0)
