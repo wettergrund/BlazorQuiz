@@ -7,7 +7,7 @@ namespace BlazorQuiz.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GameController : ControllerBase
+    public class GameController : BaseController
     {
    
         private readonly IGameService _gameService;
@@ -31,16 +31,8 @@ namespace BlazorQuiz.Server.Controllers
         public async Task<IActionResult> PostQuiz(string title, [FromBody] List<NewQuestionViewModel> questions, int seconds = 0)
         {
 
-            //Get user ID
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //Get user ID from header
-
-            if (userId == null)
-            {
-                return BadRequest();
-            }
-
             //Created a new quiz
-            var newQuiz = await _gameService.CreateQuizAsync(title, questions, seconds, userId);
+            var newQuiz = await _gameService.CreateQuizAsync(title, questions, seconds, UserId);
 
             return Ok(newQuiz);
         }
@@ -52,11 +44,7 @@ namespace BlazorQuiz.Server.Controllers
             //Create a new game.
             //Use Identity to bind to creator user
 
-
-            //Get user ID
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //Get user ID from header
-
-            var newGame = await _gameService.CreateNewGameAsync(gameId, userId);
+            var newGame = await _gameService.CreateNewGameAsync(gameId, UserId);
 
             return Ok(newGame);
         }

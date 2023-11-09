@@ -1,15 +1,13 @@
 ﻿using BlazorQuiz.Server.Data;
 using BlazorQuiz.Server.Models;
 using BlazorQuiz.Server.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace BlazorQuiz.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MediaController : ControllerBase
+    public class MediaController : BaseController
     {
         private readonly IMediaService _mediaService;
 
@@ -31,10 +29,9 @@ namespace BlazorQuiz.Server.Controllers
         public async Task<IActionResult> UploadMediaAsync([FromForm]MediaModel media,IFormFile file)
         {
       
-            //Get user ID
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //Get user ID from header
+          
 
-            var newMedia = await _mediaService.UploadMediaAsync(media, file, userId);
+            var newMedia = await _mediaService.UploadMediaAsync(media, file, UserId);
 
             return Ok(newMedia);
         }

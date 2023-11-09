@@ -8,17 +8,15 @@ namespace BlazorQuiz.Server.Services
     public class GameService : IGameService
     {
         private readonly ApplicationDbContext _context;
-        private readonly DbHelper _dbHelper;
 
         public GameService(ApplicationDbContext context)
         {
             _context = context;
-            _dbHelper = new DbHelper(context); ;
         }
         public async Task<UserQuizModel> CreateNewGameAsync(int quizId, string userId)
         {
             // Use the DbHelper or an equivalent repository to find the quiz based on ID
-            var quiz = _dbHelper.FindQuiz(quizId);
+            var quiz = FindQuiz(quizId);
 
 
             // Create a new game
@@ -105,6 +103,15 @@ namespace BlazorQuiz.Server.Services
         public Task<bool> UpdateGameAsync(int gameId, string gameState)
         {
             throw new NotImplementedException();
+        }
+
+        private QuizModel FindQuiz(int refId)
+        {
+            QuizModel? game = _context.Quizzes
+                .Where(x => x.Id == refId)
+                .FirstOrDefault();
+
+            return game;
         }
     }
 }
