@@ -1,11 +1,45 @@
 ﻿@page "/"
 
+@inject NavigationManager _navigationManager
+
 <PageTitle>Index</PageTitle>
 
 <h1>Blazor Quiz</h1>
 
 Welcome
 
+<div class ="ma-5 d-flex justify-center">
+<AuthorizeView>
+	<Authorized>
+		<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateQuiz">Create Quiz</MudButton>
+		<div>
+			<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="JoinQuiz">Join Quiz</MudButton>
+			<MudTextField T="string" Label="Insert game code to join" @bind-Value="gameCode" For="@(() => gameCode)" />
+		</div>
+		<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ViewQuiz">See All Your Quizzes</MudButton>
+	</Authorized>
+	<NotAuthorized>
+		<p>Login to se content</p>
+	</NotAuthorized>
+</AuthorizeView>
+</div>
 
 
+@code{
+	string gameCode;
+
+	private void CreateQuiz()
+	{
+		_navigationManager.NavigateTo("/createquiz");
+	}
+	private void JoinQuiz()
+	{
+		_navigationManager.NavigateTo("/game/{id}");
+	}
+	private void ViewQuiz()
+	{
+		_navigationManager.NavigateTo("/myquizzes");
+	}
+
+}
 
