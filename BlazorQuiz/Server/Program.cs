@@ -1,5 +1,6 @@
 using BlazorQuiz.Server.Data;
 using BlazorQuiz.Server.Models;
+using BlazorQuiz.Server.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,9 @@ namespace BlazorQuiz
 
             builder.Services.AddControllersWithViews();
             builder.Services.AddRazorPages();
+
+            builder.Services.AddScoped<IMediaService, MediaService>();
+
 
             var app = builder.Build();
 

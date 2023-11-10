@@ -18,7 +18,7 @@ namespace BlazorQuiz.Server.Services
             return media;
         }
 
-        public async Task<NewMediaViewModel> UploadMediaAsync(MediaModel media, IFormFile file, string userId)
+        public async Task<NewMediaViewModel> UploadMediaAsync(IFormFile file, string userId)
         {
 
 
@@ -30,8 +30,11 @@ namespace BlazorQuiz.Server.Services
             {
                 Guid = mediaGuid,
                 Path = filePath,
+                Type = file.ContentType,
                 UserRefId = userId,
-                Description = "Des" //Changed to some input from user?
+                Description = "Des" //Changed to some input from user?,
+                
+
             };
 
             _context.Add(newMedia);
@@ -39,8 +42,8 @@ namespace BlazorQuiz.Server.Services
 
             var viewModel = new NewMediaViewModel
             {
-                Guid = media.Guid,
-                Path = media.Path
+                Guid = newMedia.Guid,
+                Path = newMedia.Path
             };
 
             return viewModel;

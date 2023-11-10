@@ -8,6 +8,6 @@ namespace BlazorQuiz.Server.Services
 
         Task<MediaModel> GetMediaByIdAsync(Guid guid);
 
-        Task<NewMediaViewModel> UploadMediaAsync(MediaModel media, IFormFile file, string userId);
+        Task<NewMediaViewModel> UploadMediaAsync(IFormFile file, string userId);
     }
 }
