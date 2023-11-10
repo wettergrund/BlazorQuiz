@@ -1,28 +1,27 @@
 ﻿using BlazorQuiz.Server.Data;
 using BlazorQuiz.Server.Models;
-using Microsoft.AspNetCore.Http;
+using BlazorQuiz.Server.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace BlazorQuiz.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class MediaController : ControllerBase
+    public class MediaController : BaseController
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IMediaService _mediaService;
 
-        public MediaController(ApplicationDbContext context)
+        public MediaController(IMediaService mediaService )
         {
-            _context = context;
+            _mediaService = mediaService;
         }
 
         [HttpGet("{guid}")]
-        public IActionResult GetMedia(Guid guid)
+        public async Task<IActionResult> GetMedia(Guid guid)
         {
 
-            var media = _context.MediaModels.Where(file => file.Guid == guid).Single();
-            
+            var media = await _mediaService.GetMediaByIdAsync(guid);
+
             return Ok(media);
         }
 
@@ -30,29 +29,11 @@ namespace BlazorQuiz.Server.Controllers
         public async Task<IActionResult> UploadMediaAsync([FromForm]MediaModel media,IFormFile file)
         {
       
-            //Get user ID
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //Get user ID from header
+          
 
-            media.Guid = Guid.NewGuid();
+            var newMedia = await _mediaService.UploadMediaAsync(media, file, UserId);
 
-            var fileName = $"{media.Guid}{Path.GetExtension(file.FileName)}";
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
-
-            // Save the file
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            // Update media model
-            media.Path = filePath; 
-            media.UserRefId = userId;
-            media.Description = "Description";
-
-            _context.Add(media);
-            _context.SaveChanges();
-
-            return Ok(new { media.Guid, filePath });
+            return Ok(newMedia);
         }
 
 

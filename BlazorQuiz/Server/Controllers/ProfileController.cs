@@ -3,42 +3,39 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using BlazorQuiz.Server.Data;
 using System.Security.Claims;
+using BlazorQuiz.Server.Services;
 
 namespace BlazorQuiz.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProfileController : ControllerBase
+    public class ProfileController : BaseController
     {
-        private readonly ApplicationDbContext _context;
-        private readonly DbHelper _dbHelper;
+    
+        private readonly IProfileService _profileService;
 
-        public ProfileController(ApplicationDbContext context)
+        public ProfileController(IProfileService profileService)
         {
-            _context = context;
-            _dbHelper = new DbHelper(context); ;
+ 
+            _profileService = profileService;
         }
 
         [HttpGet("mygames")]
-        public IActionResult GetUserGames()
+        public async Task<IActionResult> GetUserGames()
         {
             // Return games related to userId (Use identity to fetch ID)
 
-            //Get user ID
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //Get user ID from header
-
-            var userGames = _context.UserQuizModels.Where(q => q.UserRefId == userId).ToList();
-
+            var userGames = await _profileService.GetUserGamesAsync(UserId);
 
             return Ok(userGames);
         }
         [HttpGet("myquizzes")]
-        public IActionResult GetCreatedGames(int id)
+        public async Task<IActionResult> GetCreatedGames()
         {
             // Return quizes created by user (Use identity to fetch ID)
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //Get user ID from header
 
-            var userQuizzes = _context.Quizzes.Where(q => q.UserRefId == userId).ToList();
+            var userQuizzes = await _profileService.GetUserCreatedGamesAsync(UserId);
 
             return Ok(userQuizzes);
         }
