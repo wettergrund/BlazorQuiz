@@ -1,9 +1,8 @@
-﻿@page "/game"
+﻿@page "/game/{id}"
 @using MudBlazor
 @using System.Text.Json;
 @using System.Text;
 @using System.Net.Http.Headers;
-@using BlazorQuiz;
 @inject HttpClient _httpClient
 @inject ILocalStorageService _localStorage
 
@@ -22,7 +21,8 @@ else
 @code {
 	List<string>? data = new List<string>();
 
-	protected override async Task OnInitializedAsync()
+	//protected override async Task OnInitializedAsync()
+	private async Task LoadGame()
 	{
 		var response = await _httpClient.GetAsync("api/game");
 		data = await response.Content.ReadFromJsonAsync<List<string>>();

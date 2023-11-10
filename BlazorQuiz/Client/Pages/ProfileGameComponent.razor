@@ -1,0 +1,51 @@
+﻿@page "/mygames"
+@using MudBlazor
+@using System.Text.Json;
+@using System.Text;
+@using System.Net.Http.Headers;
+@using BlazorQuiz.Shared.ViewModels
+@using Microsoft.AspNetCore.Components.Web;
+@using Microsoft.Extensions.DependencyInjection;
+@using Microsoft.AspNetCore.Http
+@* @using Microsoft.AspNetCore.Components.WebAssembly.Authentication; *@
+@inject AuthenticationStateProvider _authenticationStateProvider
+@inject IHttpContextAccessor _httpContextAccessor
+@inject HttpContext ctx
+@inject NavigationManager _navigationManager
+@inject HttpClient _http
+@inject ILocalStorageService _localStorage
+
+<h3>ProfileGameComponent</h3>
+<h3>Header Value: @token</h3>
+
+@code {
+    private string token { get; set; }
+    private List<string>? jsonRespons = new List<string>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var respons = await _http.GetAsync("mygames");
+        GetAccessToken();
+    }
+
+    private async Task<string> GetAccessToken()
+    {
+        var authState = await _authenticationStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        // Find the claim containing the access token
+        var accessTokenClaim = user.Claims.FirstOrDefault(c => c.Type.Equals("access_token", StringComparison.OrdinalIgnoreCase));
+
+        // Check if the access token claim is found
+        if (accessTokenClaim != null)
+        {
+            token = accessTokenClaim.Value;
+            return accessTokenClaim.Value;
+        }
+        else
+        {
+        return "Access token not found";
+        }
+
+    }
+}
