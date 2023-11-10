@@ -1,0 +1,30 @@
+﻿@page "/game/{id}"
+@using MudBlazor
+@using System.Text.Json;
+@using System.Text;
+@using System.Net.Http.Headers;
+@inject HttpClient _httpClient
+@inject ILocalStorageService _localStorage
+
+<h3>GameComponent</h3>
+
+@if (data.Count == 0)
+{
+	<h3>No Game Found</h3>
+}
+else
+{
+	<h3>Else</h3>
+}
+
+
+@code {
+	List<string>? data = new List<string>();
+
+	//protected override async Task OnInitializedAsync()
+	private async Task LoadGame()
+	{
+		var response = await _httpClient.GetAsync("api/game");
+		data = await response.Content.ReadFromJsonAsync<List<string>>();
+	}
+}
