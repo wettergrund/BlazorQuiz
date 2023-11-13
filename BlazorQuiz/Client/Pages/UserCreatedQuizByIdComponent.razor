@@ -25,7 +25,6 @@
         // Extracts the ID from url to be used in http request
         var currentUrl = _httpContext.Request.Path.ToString();
         var Guid = currentUrl.Split('/').Last();
-        //var id = currentUrl.Substring(idIndex);
 
         // HTTP request
         var response = await _http.GetAsync($"api/myquizzes/{Guid}");
