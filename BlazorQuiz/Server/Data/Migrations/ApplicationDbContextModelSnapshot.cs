@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace BlazorQuiz.Server.Data.Migrations
+namespace BlazorQuiz.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -188,7 +188,7 @@ namespace BlazorQuiz.Server.Data.Migrations
 
                     b.HasIndex("UserRefId");
 
-                    b.ToTable("QuizModels");
+                    b.ToTable("Quizzes");
                 });
 
             modelBuilder.Entity("BlazorQuiz.Server.Models.UserQuizModel", b =>
