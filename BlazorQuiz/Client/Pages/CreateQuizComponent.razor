@@ -15,11 +15,11 @@
 
 
 <div class="ma-5 d-flex justify-center">
-  
+    <MudImage Src="/Images/f8cb731a-0318-47cc-89ad-1dcb0e1360d2.jpg" Width="200" Height="150" Alt="Swedish Farm House" Elevation="25" Class="rounded-lg ma-4" />
    
     <MudPaper Width="500px" Class="pa-4">
         <MudText Typo="Typo.h5">Create New Quiz</MudText>
-        <MudForm Model="quiz">
+        <MudForm Model="quiz" @ref="form">
             <MudTextField T="string" Label="Question" @bind-Value="quiz.Question" For="@(() => quiz.Question)" />
             <MudTextField Variant="Variant.Outlined" Style="border: 1px solid #A5D6A7;" T="string" Label="Answer 1" @bind-Value="quiz.Answer1" For="@(() => quiz.Answer1)" />
             <MudTextField T="string" Label="Answer 2" @bind-Value="quiz.Answer2" For="@(() => quiz.Answer2)" />
@@ -28,9 +28,19 @@
             <MudTextField T="string" Label="Correct Answer" @bind-Value="quiz.CorrectAnswer" For="@(() => quiz.CorrectAnswer)" />
             @* <MudTextField T="string" Label="Image Url" @bind-Value="quiz.QuizImageUrl" For="@(() => quiz.QuizImageUrl)" /> *@
             <_Upload OnFileUpload="OnFileUploaded" />
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddQuestion">Add More Questions</MudButton>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddQuestion" >Add More Questions</MudButton>
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateQuiz">Create Quiz</MudButton>
         </MudForm>
+        <MudExpansionPanels>
+
+            @foreach (var item in quizList)
+            {
+                <MudExpansionPanel @key="@item.Question" Text="@item.Question" MaxHeight="150">
+                    @item.CorrectAnswer
+                </MudExpansionPanel>
+            }
+
+    </MudExpansionPanels>
     </MudPaper>
 </div>
 
@@ -40,6 +50,7 @@
     private NewQuestionViewModel quiz = new NewQuestionViewModel();
     private List<NewQuestionViewModel> quizList = new List<NewQuestionViewModel>();
     private string uploadedFileGuid;
+    MudForm form;
 
     protected override async Task OnInitializedAsync()
     {
@@ -48,6 +59,7 @@
 
     private void OnFileUploaded(string guid)
     {
+
         quiz.QuizImageUrl = guid;
         StateHasChanged();
         // Now you can use the uploadedFileGuid as needed in this component
@@ -62,6 +74,18 @@
 
     private async Task AddQuestion()
     {
-        quizList.Add(quiz);
+        var quizClone = new NewQuestionViewModel
+            {
+                Question = quiz.Question,
+                Answer1 = quiz.Answer1,
+                Answer2 = quiz.Answer2,
+                Answer3 = quiz.Answer3,
+                Answer4 = quiz.Answer4,
+                CorrectAnswer = quiz.CorrectAnswer,
+                QuizImageUrl = quiz.QuizImageUrl
+            };
+        quizList.Add(quizClone);
+        await form.ResetAsync();
+        StateHasChanged();
     }
 }

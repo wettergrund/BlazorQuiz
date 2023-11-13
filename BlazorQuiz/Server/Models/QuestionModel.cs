@@ -1,6 +1,7 @@
 ﻿using BlazorQuiz.Shared.ViewModels;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace BlazorQuiz.Server.Models
 {
@@ -27,6 +28,7 @@ namespace BlazorQuiz.Server.Models
 
         [ForeignKey("Quiz")]
         public string QuizRefId { get; set; }
+        [JsonIgnore]
         public virtual QuizModel Quiz { get; set; }
 
         [ForeignKey("Media")]

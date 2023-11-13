@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlazorQuiz.Server.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231113150419_hej")]
-    partial class hej
+    [Migration("20231113150419_CreateDB")]
+    partial class CreateDB
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
