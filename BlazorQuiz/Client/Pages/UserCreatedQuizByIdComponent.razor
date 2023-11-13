@@ -1,6 +1,35 @@
 ﻿@page "/myquizzes/{id}"
+@using BlazorQuiz.Shared.ViewModels
+@using Microsoft.AspNetCore.Http;
+@inject HttpContext _httpContext
+@inject HttpClient _http
+
 <h3>UserCreatedQuizByIdComponent</h3>
 
+<div>
+    <ul>
+        @foreach (var item in userQuizList)
+        {
+            <li>@item.User <br />
+                @item.Score    
+            </li>
+        }
+    </ul>
+</div>
+
 @code {
+    List<UserQuizViewModel>? userQuizList = new List<UserQuizViewModel>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        // Extracts the ID from url to be used in http request
+        var currentUrl = _httpContext.Request.Path.ToString();
+        var Guid = currentUrl.Split('/').Last();
+        //var id = currentUrl.Substring(idIndex);
+
+        // HTTP request
+        var response = await _http.GetAsync($"api/myquizzes/{Guid}");
+        userQuizList = await response.Content.ReadFromJsonAsync<List<UserQuizViewModel>>();
+    }
 
 }

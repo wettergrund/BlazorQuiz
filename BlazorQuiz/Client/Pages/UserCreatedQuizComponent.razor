@@ -5,12 +5,19 @@
 <h3>UserCreatedQuizComponent</h3>
 
 <div>
-    <ul>
-    @foreach (var item in createdQuizList)
-    {
-            <li><MudLink Href='@string.Format("/myquizzes/{0}", item.PublicId)' Color=Color.Inherit Underline="Underline.None">@item.Name</MudLink></li>
-    }
-    </ul>
+    <AuthorizeView>
+        <Authorized>
+            <ul>
+            @foreach (var item in createdQuizList)
+            {
+                    <li><MudLink Href='@string.Format("/myquizzes/{0}", item.PublicId)' Color=Color.Inherit Underline="Underline.None">@item.Name</MudLink></li>
+            }
+            </ul>
+        </Authorized>
+        <NotAuthorized>
+            <p>Login to view data</p>
+        </NotAuthorized>
+    </AuthorizeView>
 </div>
 
 @code {
@@ -18,7 +25,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var response = await _http.GetAsync("mygames");
+        var response = await _http.GetAsync("api/profile/myquizzes");
         createdQuizList = await response.Content.ReadFromJsonAsync<List<UserCreatedQuizViewModel>>();
     }
 

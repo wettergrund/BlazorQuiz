@@ -2,7 +2,7 @@
 {
     public class UserCreatedQuizViewModel
     {
-        public Guid PublicId { get; set; }
+        public string PublicId { get; set; }
         public string Name { get; set; }
     }
 }
