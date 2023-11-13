@@ -152,8 +152,9 @@ namespace BlazorQuiz.Server.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("QuizRefId")
-                        .HasColumnType("int");
+                    b.Property<string>("QuizRefId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -166,18 +167,15 @@ namespace BlazorQuiz.Server.Data.Migrations
 
             modelBuilder.Entity("BlazorQuiz.Server.Models.QuizModel", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("PublicId")
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("PublicId")
-                        .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Timer")
                         .HasColumnType("int");
@@ -186,11 +184,11 @@ namespace BlazorQuiz.Server.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("PublicId");
 
                     b.HasIndex("UserRefId");
 
-                    b.ToTable("Quizzes");
+                    b.ToTable("QuizModels");
                 });
 
             modelBuilder.Entity("BlazorQuiz.Server.Models.UserQuizModel", b =>
@@ -201,8 +199,9 @@ namespace BlazorQuiz.Server.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("QuizRefId")
-                        .HasColumnType("int");
+                    b.Property<string>("QuizRefPublicId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Score")
                         .HasColumnType("int");
@@ -213,7 +212,7 @@ namespace BlazorQuiz.Server.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("QuizRefId");
+                    b.HasIndex("QuizRefPublicId");
 
                     b.HasIndex("UserRefId");
 
@@ -543,7 +542,7 @@ namespace BlazorQuiz.Server.Data.Migrations
                 {
                     b.HasOne("BlazorQuiz.Server.Models.QuizModel", "Quiz")
                         .WithMany()
-                        .HasForeignKey("QuizRefId")
+                        .HasForeignKey("QuizRefPublicId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

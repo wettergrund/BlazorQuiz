@@ -34,6 +34,7 @@ namespace BlazorQuiz.Server.Controllers
 
             var userQuizzes = await _profileService.GetUserCreatedGamesAsync(UserId);
 
+            // Returns UserCreatedQuizViewModel List
             return Ok(userQuizzes);
         }
         [HttpGet("myquizzes/{id}")]
@@ -47,6 +48,7 @@ namespace BlazorQuiz.Server.Controllers
 
             var quizUserData = await _profileService.GetDataOnGameAsync(publicID);
 
+            // Returns UserQuizViewModel List with score and user
             return Ok(quizUserData);
         }
     }
