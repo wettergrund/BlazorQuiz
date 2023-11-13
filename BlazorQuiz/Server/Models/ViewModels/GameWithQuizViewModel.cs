@@ -8,7 +8,7 @@
 
         // Properties from QuizModel
         public int QuizId { get; set; }
-        public Guid QuizPublicId { get; set; }
+        public string QuizPublicId { get; set; }
         public string QuizName { get; set; }
         public int QuizTimer { get; set; }
         public ICollection<QuestionModel> Questions { get; set; }

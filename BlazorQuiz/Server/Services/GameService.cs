@@ -22,7 +22,7 @@ namespace BlazorQuiz.Server.Services
             // Create a new game
             var newGame = new UserQuizModel
             {
-                QuizRefId = quiz.Id,
+                QuizRefPublicId = quiz.PublicId,
                 UserRefId = userId,
                 Score = 0,
             };
@@ -41,7 +41,7 @@ namespace BlazorQuiz.Server.Services
             var newQuiz = new QuizModel
             {
                 Name = title,
-                PublicId = Guid.NewGuid(),
+                PublicId = Guid.NewGuid().ToString(),
                 Timer = seconds,
                 UserRefId = userId
             };
@@ -56,7 +56,7 @@ namespace BlazorQuiz.Server.Services
                 var newQuestion = new QuestionModel
                 {
 
-                    QuizRefId = newQuiz.Id,
+                    QuizRefId = newQuiz.PublicId,
                     MediaRefId = 0 //0 for now
                 };
 
