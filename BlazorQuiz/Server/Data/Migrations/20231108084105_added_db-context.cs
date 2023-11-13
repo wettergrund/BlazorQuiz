@@ -36,14 +36,14 @@ namespace BlazorQuiz.Server.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PublicId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    PublicId = table.Column<string>(type: "uniqueidentifier", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Timer = table.Column<int>(type: "int", nullable: false),
                     UserRefId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Quizzes", x => x.Id);
+                    table.PrimaryKey("PK_Quizzes", x => x.PublicId);
                     table.ForeignKey(
                         name: "FK_Quizzes_AspNetUsers_UserRefId",
                         column: x => x.UserRefId,
@@ -63,7 +63,7 @@ namespace BlazorQuiz.Server.Data.Migrations
                     Answer2 = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Answer3 = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Answer4 = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    QuizRefId = table.Column<int>(type: "int", nullable: false),
+                    QuizRefId = table.Column<string>(type: "string", nullable: false),
                     MediaRefId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -76,7 +76,7 @@ namespace BlazorQuiz.Server.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_QuestionModels_Quizzes_QuizRefId",
+                        name: "FK_QuestionModels_Quizzes_QuizRefPublicId",
                         column: x => x.QuizRefId,
                         principalTable: "Quizzes",
                         principalColumn: "Id",
@@ -90,7 +90,7 @@ namespace BlazorQuiz.Server.Data.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Score = table.Column<int>(type: "int", nullable: false),
-                    QuizRefId = table.Column<int>(type: "int", nullable: false),
+                    QuizRefPublicId = table.Column<string>(type: "string", nullable: false),
                     UserRefId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
@@ -103,10 +103,10 @@ namespace BlazorQuiz.Server.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
-                        name: "FK_UserQuizModels_Quizzes_QuizRefId",
-                        column: x => x.QuizRefId,
+                        name: "FK_UserQuizModels_Quizzes_QuizRefPublicId",
+                        column: x => x.QuizRefPublicId,
                         principalTable: "Quizzes",
-                        principalColumn: "Id",
+                        principalColumn: "PublicId",
                         onDelete: ReferentialAction.NoAction);
                 });
 

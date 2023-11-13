@@ -26,7 +26,7 @@ namespace BlazorQuiz.Server.Models
         public string Answer4 { get; set; }
 
         [ForeignKey("Quiz")]
-        public int QuizRefId { get; set; }
+        public string QuizRefId { get; set; }
         public virtual QuizModel Quiz { get; set; }
 
         [ForeignKey("Media")]

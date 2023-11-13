@@ -5,9 +5,9 @@ namespace BlazorQuiz.Server.Models
 {
     public class QuizModel
     {
-        [Key]
         public int Id { get; set; }
-        public Guid PublicId { get; set; }
+        [Key]
+        public string PublicId { get; set; }
         public string Name { get; set; }
         public int Timer { get; set; }
 
