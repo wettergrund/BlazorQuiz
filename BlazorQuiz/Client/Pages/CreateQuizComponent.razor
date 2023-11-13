@@ -15,37 +15,49 @@
 
 
 <div class="ma-5 d-flex justify-center">
+  
+   
     <MudPaper Width="500px" Class="pa-4">
         <MudText Typo="Typo.h5">Create New Quiz</MudText>
         <MudForm Model="quiz">
             <MudTextField T="string" Label="Question" @bind-Value="quiz.Question" For="@(() => quiz.Question)" />
-            <MudTextField T="string" Label="Answer 1" @bind-Value="quiz.Answer1" For="@(() => quiz.Answer1)" />
+            <MudTextField Variant="Variant.Outlined" Style="border: 1px solid #A5D6A7;" T="string" Label="Answer 1" @bind-Value="quiz.Answer1" For="@(() => quiz.Answer1)" />
             <MudTextField T="string" Label="Answer 2" @bind-Value="quiz.Answer2" For="@(() => quiz.Answer2)" />
             <MudTextField T="string" Label="Answer 3" @bind-Value="quiz.Answer3" For="@(() => quiz.Answer3)" />
             <MudTextField T="string" Label="Answer 4" @bind-Value="quiz.Answer4" For="@(() => quiz.Answer4)" />
             <MudTextField T="string" Label="Correct Answer" @bind-Value="quiz.CorrectAnswer" For="@(() => quiz.CorrectAnswer)" />
-            <MudTextField T="string" Label="Image Url" @bind-Value="quiz.QuizImageUrl" For="@(() => quiz.QuizImageUrl)" />
+            @* <MudTextField T="string" Label="Image Url" @bind-Value="quiz.QuizImageUrl" For="@(() => quiz.QuizImageUrl)" /> *@
+            <_Upload OnFileUpload="OnFileUploaded" />
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="AddQuestion">Add More Questions</MudButton>
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateQuiz">Create Quiz</MudButton>
         </MudForm>
     </MudPaper>
 </div>
-<h3>Header Value: @token</h3>
+
 
 @code{
+    private MudTheme Theme = new MudTheme();
     private NewQuestionViewModel quiz = new NewQuestionViewModel();
     private List<NewQuestionViewModel> quizList = new List<NewQuestionViewModel>();
-    private List<string>? jsonRespons = new List<string>();
-    private string token { get; set; }
+    private string uploadedFileGuid;
 
     protected override async Task OnInitializedAsync()
     {
 
     }
-    
+
+    private void OnFileUploaded(string guid)
+    {
+        quiz.QuizImageUrl = guid;
+        StateHasChanged();
+        // Now you can use the uploadedFileGuid as needed in this component
+    }
+
     private async Task CreateQuiz()
     {
-        var response = await _http.PostAsJsonAsync("api/PostQuiz", quizList);
+        string title = "Test";
+
+        var response = await _http.PostAsJsonAsync($"api/game/create/{title}", quizList);
     }
 
     private async Task AddQuestion()
