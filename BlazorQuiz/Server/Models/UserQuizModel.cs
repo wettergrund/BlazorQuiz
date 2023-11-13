@@ -10,7 +10,7 @@ namespace BlazorQuiz.Server.Models
         public int Score { get; set; }
 
         [ForeignKey("Quiz")]
-        public int QuizRefId { get; set; }
+        public string QuizRefPublicId { get; set; }
         public virtual QuizModel Quiz { get; set; }
 
         [ForeignKey("User")]

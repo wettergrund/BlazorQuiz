@@ -1,6 +1,5 @@
 ﻿using BlazorQuiz.Server.Data;
 using BlazorQuiz.Server.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace BlazorQuiz.Server.Services
 {
@@ -11,7 +10,7 @@ namespace BlazorQuiz.Server.Services
         public ProfileService(ApplicationDbContext context)
         {
             _context = context;
-            
+
         }
 
         public async Task<List<QuizModel>> GetUserCreatedGamesAsync(string userId)
@@ -26,6 +25,13 @@ namespace BlazorQuiz.Server.Services
         public async Task<List<UserQuizModel>> GetUserGamesAsync(string userId)
         {
             var userGames = _context.UserQuizModels.Where(q => q.UserRefId == userId).ToList();
+
+            return userGames;
+        }
+
+        public async Task<List<UserQuizModel>> GetDataOnGameAsync(string publicId)
+        {
+            var userGames = _context.UserQuizModels.Where(q => q.QuizRefPublicId == publicId).ToList();
 
             return userGames;
         }

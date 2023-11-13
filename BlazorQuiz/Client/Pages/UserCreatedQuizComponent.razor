@@ -1,4 +1,4 @@
-﻿@page "/mygames"
+﻿@page "/myquizzes"
 @using BlazorQuiz.Shared.ViewModels
 @inject HttpClient _http
 
@@ -8,13 +8,13 @@
     <ul>
     @foreach (var item in createdQuizList)
     {
-            <li><MudLink Href='@string.Format("/mygames/{0}", item.PublicId)' Color=Color.Inherit Underline="Underline.None">@item.Name</MudLink></li>
+            <li><MudLink Href='@string.Format("/myquizzes/{0}", item.PublicId)' Color=Color.Inherit Underline="Underline.None">@item.Name</MudLink></li>
     }
     </ul>
 </div>
 
 @code {
-    List<UserCreatedQuizViewModel> createdQuizList = new List<UserCreatedQuizViewModel>();
+    List<UserCreatedQuizViewModel>? createdQuizList = new List<UserCreatedQuizViewModel>();
 
     protected override async Task OnInitializedAsync()
     {
