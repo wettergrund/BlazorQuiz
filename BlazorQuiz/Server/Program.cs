@@ -32,6 +32,8 @@ namespace BlazorQuiz
             builder.Services.AddRazorPages();
 
             builder.Services.AddScoped<IMediaService, MediaService>();
+            builder.Services.AddScoped<IGameService, GameService>();
+
 
 
             var app = builder.Build();
