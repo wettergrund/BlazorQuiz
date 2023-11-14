@@ -37,7 +37,7 @@ namespace BlazorQuiz.Server.Controllers
             return Ok(newQuiz);
         }
 
-        [HttpPost("create/{gameId}")]
+        [HttpPost("newgame/{gameId}")]
         public async Task<IActionResult> PostNewGame(int gameId)
         {
 

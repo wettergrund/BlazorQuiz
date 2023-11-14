@@ -1,0 +1,81 @@
+﻿@inject HttpClient _httpClient
+@inject ISnackbar Snackbar;
+@using System.Net.Http.Headers;
+@using System.Text.Json;
+@using BlazorQuiz.Shared.ViewModels;
+
+<MudFileUpload T="IBrowserFile" FilesChanged="UploadFile" Accept=".png, .jpg, .jpeg, .gif" Disabled ="@fileUploaded">
+    <ButtonTemplate>
+        <MudFab HtmlTag="label"
+                Color="Color.Secondary"
+                Icon="@Icons.Material.Filled.CloudUpload"
+                Label="Upload a file"
+                for="@context" />
+    </ButtonTemplate>
+</MudFileUpload>
+
+@if (file != null)
+{
+   
+    <MudList>
+   
+            <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="@file">
+                @file.Name <code>@file.Size bytes</code>
+            </MudListItem>
+        
+    </MudList>
+}
+
+File uploading:
+@fileUploaded
+
+@code {
+
+    [Parameter]
+    public EventCallback<string> OnFileUpload { get; set; }
+
+    IBrowserFile file;
+
+
+    bool fileUploaded = false;
+
+
+    private async Task UploadFile(IBrowserFile file)
+    {
+        fileUploaded = true;
+        var content = new MultipartFormDataContent();
+        var stream = file.OpenReadStream(maxAllowedSize: 3 * 1024 * 1024);
+
+        var fileContent = new StreamContent(stream);
+        fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+        content.Add(fileContent, "file", file.Name);
+
+        this.file = file;
+        var response = await _httpClient.PostAsync("api/media", content);
+        var json = await response.Content.ReadAsStringAsync();
+
+        var myObject = JsonSerializer.Deserialize<NewMediaViewModel>(json);
+
+
+        await OnFileUpload.InvokeAsync(myObject.guid);
+
+
+
+        Snackbar.Add("Saved!", Severity.Success);
+
+
+        await Task.Delay(2000);
+
+        
+        fileUploaded = false;
+
+         /* 
+          * TODO:
+          * [] Proper error handling for filetype
+          * 
+          */
+
+    }
+
+
+}

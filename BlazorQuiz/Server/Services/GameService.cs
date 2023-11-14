@@ -8,10 +8,14 @@ namespace BlazorQuiz.Server.Services
     public class GameService : IGameService
     {
         private readonly ApplicationDbContext _context;
+        private readonly IMediaService _mediaService;
 
-        public GameService(ApplicationDbContext context)
+
+        public GameService(ApplicationDbContext context, IMediaService mediaService)
         {
             _context = context;
+            _mediaService = mediaService;
+
         }
         public async Task<UserQuizModel> CreateNewGameAsync(int quizId, string userId)
         {
@@ -53,12 +57,28 @@ namespace BlazorQuiz.Server.Services
             // Create new questions and bind them to the quiz.
             foreach (var questionViewModel in questions)
             {
+                var media = await _mediaService.GetMediaByIdAsync(Guid.Parse(questionViewModel.QuizImageUrl));
+                int mediaID = media.Id;
+
                 var newQuestion = new QuestionModel
                 {
-
-                    QuizRefId = newQuiz.PublicId,
-                    MediaRefId = 0 //0 for now
+                    Question = questionViewModel.Question,
+                    Answer1 = questionViewModel.Answer1,
+                    Answer2 = questionViewModel.Answer2,
+                    Answer3 = questionViewModel.Answer3,
+                    Answer4 = questionViewModel.Answer4,
+                    QuizRefId = newQuiz.PublicId
                 };
+
+                if (mediaID > 0)
+                {
+                    newQuestion.MediaRefId = mediaID;
+
+                }
+                else
+                {
+                    newQuestion.MediaRefId = 0;
+                }
 
                 // Add the new question to the context
                 _context.QuestionModels.Add(newQuestion);
