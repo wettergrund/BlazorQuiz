@@ -1,6 +1,5 @@
 ﻿using BlazorQuiz.Server.Services;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace BlazorQuiz.Server.Controllers
 {
@@ -30,7 +29,7 @@ namespace BlazorQuiz.Server.Controllers
         public async Task<IActionResult> GetCreatedGames()
         {
             // Return quizes created by user (Use identity to fetch ID)
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //Get user ID from header
+            //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //Get user ID from header
 
             var userQuizzes = await _profileService.GetUserCreatedGamesAsync(UserId);
 
@@ -41,7 +40,7 @@ namespace BlazorQuiz.Server.Controllers
         public async Task<IActionResult> GetDataOnSpecificGame(string publicID)
         {
             // Return quizes created by user (Use identity to fetch ID)
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //Get user ID from header
+            //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //Get user ID from header
 
             // Send data to client on all users who played this specific Quiz
             // Who played and what Score they got.

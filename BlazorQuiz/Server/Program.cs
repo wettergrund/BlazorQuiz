@@ -2,7 +2,6 @@ using BlazorQuiz.Server.Data;
 using BlazorQuiz.Server.Models;
 using BlazorQuiz.Server.Services;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazorQuiz
@@ -33,6 +32,7 @@ namespace BlazorQuiz
 
             builder.Services.AddScoped<IMediaService, MediaService>();
             builder.Services.AddScoped<IGameService, GameService>();
+            builder.Services.AddScoped<IProfileService, ProfileService>();
 
 
 
