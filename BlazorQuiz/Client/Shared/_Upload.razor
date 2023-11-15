@@ -8,12 +8,12 @@
     <ButtonTemplate>
         <MudFab HtmlTag="label"
                 Color="Color.Secondary"
-                Icon="@Icons.Material.Filled.CloudUpload"
+                StartIcon="@Icons.Material.Filled.CloudUpload"
                 Label="Upload a file"
                 for="@context" />
     </ButtonTemplate>
 </MudFileUpload>
-
+@* 
 @if (file != null)
 {
    
@@ -24,10 +24,8 @@
             </MudListItem>
         
     </MudList>
-}
+} *@
 
-File uploading:
-@fileUploaded
 
 @code {
 
