@@ -51,7 +51,37 @@ namespace BlazorQuiz.Server.Services
         }
         private async Task<string> SaveFileAsync(IFormFile file, string fileName)
         {
-            var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/images", fileName);
+            string imageDir = "wwwroot/images";
+            string videoDir = "wwwroot/videos";
+            string destDir = imageDir;
+
+
+            if (file.ContentType.StartsWith("video"))
+            {
+                bool videoDirExist = Directory.Exists(videoDir);
+
+                if (!videoDirExist)
+                {
+                    Directory.CreateDirectory(videoDir);
+                }
+
+                destDir = videoDir;
+
+            }
+            else if(file.ContentType.StartsWith("image"))
+            {
+                bool imageDirExist = Directory.Exists(imageDir);
+
+                if (!imageDirExist)
+                {
+                    Directory.CreateDirectory(imageDir);
+                }
+
+            }
+
+            Directory.CreateDirectory(fileName);
+
+            var filePath = Path.Combine(Directory.GetCurrentDirectory(), destDir, fileName);
 
             // Save the file
             using (var stream = new FileStream(filePath, FileMode.Create))

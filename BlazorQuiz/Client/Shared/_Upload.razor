@@ -4,7 +4,7 @@
 @using System.Text.Json;
 @using BlazorQuiz.Shared.ViewModels;
 
-<MudFileUpload T="IBrowserFile" FilesChanged="UploadFile" Accept=".png, .jpg, .jpeg, .gif" Disabled ="@fileUploaded">
+<MudFileUpload T="IBrowserFile" FilesChanged="UploadFile" Accept=".png, .jpg, .jpeg, .gif, .mp4" Disabled="@(!IsActive)">
     <ButtonTemplate>
         <MudFab HtmlTag="label"
                 Color="Color.Secondary"
@@ -13,24 +13,14 @@
                 for="@context" />
     </ButtonTemplate>
 </MudFileUpload>
-@* 
-@if (file != null)
-{
-   
-    <MudList>
-   
-            <MudListItem Icon="@Icons.Material.Filled.AttachFile" @key="@file">
-                @file.Name <code>@file.Size bytes</code>
-            </MudListItem>
-        
-    </MudList>
-} *@
 
 
 @code {
 
     [Parameter]
     public EventCallback<string> OnFileUpload { get; set; }
+    [Parameter]
+    public bool IsActive { get; set; }
 
     IBrowserFile file;
 
@@ -42,7 +32,7 @@
     {
         fileUploaded = true;
         var content = new MultipartFormDataContent();
-        var stream = file.OpenReadStream(maxAllowedSize: 3 * 1024 * 1024);
+        var stream = file.OpenReadStream(maxAllowedSize: 13 * 1024 * 1024);
 
         var fileContent = new StreamContent(stream);
         fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
@@ -67,12 +57,7 @@
         
         fileUploaded = false;
 
-         /* 
-          * TODO:
-          * [] Proper error handling for filetype
-          * 
-          */
-
+       
     }
 
 

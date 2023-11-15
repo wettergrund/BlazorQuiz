@@ -1,0 +1,33 @@
+﻿    <MudCard Style="width:640px; height: 360px">
+@if (!ShowVideo)
+{
+        <MudCardContent Width="650" Height="370">
+            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="300px" />
+            <MudSkeleton SkeletonType="SkeletonType.Text" Class="mt-1" Width="100%" Height="30px" />
+        </MudCardContent>
+}
+
+<video autoplay="@(ShowVideo)" width="640" height="360" hidden="@(!ShowVideo)">
+        <source src=@VideoPath type=@VideoType>
+    Your browser does not support the video tag.
+</video>
+    </MudCard>
+
+@code {
+    [Parameter]
+    public bool ShowVideo { get; set; } //Trigger to run video
+
+    [Parameter]
+    public string VideoPath { get; set; } = "/videos/e53cd43c-555e-4a3e-a056-6a74d087df26.mp4";
+    [Parameter]
+    public string VideoType { get; set; } = "video/mp4";
+
+}
+
+
+@*
+Use:
+
+<_PlayVideo ShowVideo="@showVideo" VideoPath="moviepath.mp4" VideoType="video/mp4"  />
+
+*@

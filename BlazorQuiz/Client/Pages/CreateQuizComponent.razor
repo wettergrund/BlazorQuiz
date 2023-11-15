@@ -4,97 +4,99 @@
 @using System.Text;
 @using System.Net.Http.Headers;
 @using BlazorQuiz.Shared.ViewModels
-@* @using Microsoft.AspNetCore.Components.Web; *@
-@* @using Microsoft.AspNetCore.Http *@
-@* @inject AuthenticationStateProvider _authenticationStateProvider *@
-@* @inject IHttpContextAccessor _httpContextAccessor *@
-@* @inject HttpContext _context *@
-@* @inject NavigationManager _navigationManager *@
+@using Models;
+
 @inject HttpClient _http
-@* @inject ILocalStorageService _localStorage *@
 
 
 <div class="ma-5 d-flex align-center justify-center">
     @* <MudImage Src="/images/317f578a-0daa-402d-b665-79625b337669.png" Width="200" Height="150" Alt="Swedish Farm House" Elevation="25" Class="rounded-lg ma-4" /> *@
     <MudGrid Class="d-flex align-center justify-center">
         <MudText Typo="Typo.h4">New Quiz</MudText>
-
         <MudItem xs="12" Class="d-flex align-center justify-center">
             <MudPaper Width="500px" Class="d-block pa-12">
                 <MudText Typo="Typo.h5">Settings</MudText>
-                <MudTextField T="string" Label="Quiz Title" @bind-Value="QuizTitle" For="@(() => QuizTitle)" Required="true" RequiredError="Add a title!" />
+                <MudTextField T="string" Immediate="true" Label="Quiz Title" @bind-Value="options.QuizTitle" For="@(() => options.QuizTitle)" Required="true" RequiredError="Add a title!" />
 
-                <MudCheckBox @bind-Checked="@HasTimer" Color="Color.Primary">Enable timer</MudCheckBox>
+                <MudToggleIconButton @bind-Toggled="@options.HasTimer"
+                                     Icon="@Icons.Material.Filled.AlarmOff" Color="@Color.Error" Title="Off"
+                                     ToggledIcon="@Icons.Material.Filled.AlarmOn" ToggledColor="@Color.Success" ToggledTitle="On" />
+                                     
+                <span>Question time limit @(options.HasTimer ? ReturnTimer(options.Timer) : "Off")</span>
 
-                <div hidden="@(!HasTimer)">
-                    <MudSlider Step="15" @bind-Value="timer" Min="15" Max="120" Color="Color.Success" />
-                    @if (timer > 59)
-                    {
-                        <div>
-                            @(timer / 60) minutes
-                        </div>
-                    }
-                    else
-                    {
-                        <div>
-                            @timer seconds
-                        </div>
-                    }
-
-                </div>
+                <MudSlider Disabled="@(!options.HasTimer)" Step="15" @bind-Value="options.Timer" Min="15" Max="120" Color="@(options.HasTimer ? Color.Success : Color.Dark)" />
+         
             </MudPaper>
         </MudItem>
-        <MudItem xs="12" Class="d-flex align-center justify-center">
-    <MudPaper Width="500px" Class="d-block pa-4">
-        <MudExpansionPanels>
-
-                @QuizTitle
-            @foreach (var item in quizList)
-            {
-                <MudExpansionPanel @key="@item.Question" Text="@item.Question" MaxHeight="150">
-                    @item.CorrectAnswer
-                </MudExpansionPanel>
-            }
-
-    </MudExpansionPanels>
-        <MudText Typo="Typo.h5">Add questions</MudText>
-                <MudForm Model="quiz" @ref="form" @bind-IsValid="@isValidated">
-            <MudTextField T="string" Label="Question" @bind-Value="quiz.Question" For="@(() => quiz.Question)" Required="true" RequiredError="Add a quetsion!" />
-            <MudTextField Variant="Variant.Outlined" Style="border: 1px solid #A5D6A7;" T="string" Label="Answer 1" @bind-Value="quiz.Answer1" For="@(() => quiz.Answer1)" Required="true" RequiredError="Required" />
-            <MudTextField T="string" Label="Answer 2" @bind-Value="quiz.Answer2" For="@(() => quiz.Answer2)" Required="true" RequiredError="Required" />
-            <MudTextField T="string" Label="Answer 3" @bind-Value="quiz.Answer3" For="@(() => quiz.Answer3)" Required="true" RequiredError="Required" />
-            <MudTextField T="string" Label="Answer 4" @bind-Value="quiz.Answer4" For="@(() => quiz.Answer4)" Required="true" RequiredError="Required" OnChange="@(()=>form.Validate())" />
-            <MudTextField T="string" Label="Correct Answer" @bind-Value="quiz.CorrectAnswer" For="@(() => quiz.CorrectAnswer)" />
-            @* <MudTextField T="string" Label="Image Url" @bind-Value="quiz.QuizImageUrl" For="@(() => quiz.QuizImageUrl)" /> *@
-            <_Upload OnFileUpload="OnFileUploaded" />
-            <MudFab Disabled="@(!isValidated)" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="AddQuestion" />
-            
-        </MudForm>
-    </MudPaper>
-
-        </MudItem>
-            <MudButton Disabled="@(!hasQuestion)" Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateQuiz">Create Quiz</MudButton>
         
+        <MudItem xs="12" Class="d-flex align-center justify-center">
+            <MudPaper Width="500px" Class="d-block pa-12">
+                <MudExpansionPanels>
+
+                    @options.QuizTitle
+                    @foreach (var item in quizList)
+                    {
+                        <MudExpansionPanel @key="@item.Question" Text="@item.Question" MaxHeight="150">
+                            @item.CorrectAnswer
+                        </MudExpansionPanel>
+                    }
+
+                </MudExpansionPanels>
+                <MudText Typo="Typo.h5">Add a question</MudText>
+   
+                <MudForm Model="quiz" @ref="form" @bind-IsValid="@options.IsValidated">
+                    <MudTextField T="string" Label="Question" @bind-Value="quiz.Question" For="@(() => quiz.Question)" Required="true" RequiredError="Add a quetsion!" />
+                    <MudTextField Variant="Variant.Outlined" T="string" Label="Correct answer" @bind-Value="quiz.Answer1" For="@(() => quiz.Answer1)" Required="true" RequiredError="Required" />
+                    <MudTextField T="string" Label="Incorrect answer 1" @bind-Value="quiz.Answer2" For="@(() => quiz.Answer2)" Required="true" RequiredError="Required" />
+                    <MudTextField T="string" Label="Incorrect answer 2" @bind-Value="quiz.Answer3" For="@(() => quiz.Answer3)" Required="true" RequiredError="Required" />
+                    <MudTextField Immediate="true" T="string" Label="Incorrect answer 4" @bind-Value="quiz.Answer4" For="@(() => quiz.Answer4)" Required="true" RequiredError="Required" OnChange="@(()=>form.Validate())" />
+                    <MudExpansionPanels Class="mt-3">
+                        <MudExpansionPanel>
+                            <TitleContent>
+                                <div class="d-flex">
+                                    <MudIcon Icon="@Icons.Material.Filled.Settings" class="mr-3"></MudIcon>
+                                    <MudText>Question options</MudText>
+                                </div>
+                            </TitleContent>
+                            <ChildContent>
+                                <MudToggleIconButton @bind-Toggled="@options.MediaQuestion"
+                                                     Icon="@Icons.Material.Filled.ImageNotSupported" Color="@Color.Error" Title="Off"
+                                                     ToggledIcon="@Icons.Material.Filled.Image" ToggledColor="@Color.Success" ToggledTitle="On" />
+
+                                <span>@(options.MediaQuestion ? "This is a media question" : "This is a text question")</span>
+
+
+                                <_Upload OnFileUpload="OnFileUploaded" IsActive="@options.MediaQuestion" />
+                            </ChildContent>
+          
+                        </MudExpansionPanel>
+                    </MudExpansionPanels>
+                    <MudTooltip Text="Add">
+
+                        <MudFab Disabled="@(!(options.IsValidated && (!options.MediaQuestion || (options.MediaQuestion && !string.IsNullOrEmpty(quiz.QuizImageUrl)))))" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="AddQuestion" />
+                    </MudTooltip>
+
+                </MudForm>
+            </MudPaper>
+        </MudItem>
+        @quiz.QuizImageUrl
+        @* @quiz.QuizImageUrl.Length *@
+        <MudButton Disabled="@(!options.HasQuestion)" Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateQuiz">Create Quiz</MudButton>
     </MudGrid>
 
 </div>
 
 
-@code{
-    MudForm form;
+@code {
     private MudTheme Theme = new MudTheme();
     private NewQuestionViewModel quiz = new NewQuestionViewModel();
     private List<NewQuestionViewModel> quizList = new List<NewQuestionViewModel>();
-    private string uploadedFileGuid;
+    MudForm? form;
 
-    bool isValidated = false;
-    bool hasQuestion = false;
+    QuizOptions options = new QuizOptions(); //Set of settings to make the quiz work
 
-    double timer = 60;
 
-    public string QuizTitle { get; set; }
 
-    public bool HasTimer { get; set; } = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -103,23 +105,25 @@
 
     private void OnFileUploaded(string guid)
     {
+        //Helper function to work with _Upload
 
         quiz.QuizImageUrl = guid;
         StateHasChanged();
-        // Now you can use the uploadedFileGuid as needed in this component
     }
+
+
 
     private async Task CreateQuiz()
     {
         var newQuiz = new NewQuizViewModel()
             {
-                Title = QuizTitle,
+                Title = options.QuizTitle,
                 Questions = quizList,
             };
 
-        if (HasTimer)
+        if (options.HasTimer)
         {
-            newQuiz.Timer = (int)timer;
+            newQuiz.Timer = (int)options.Timer;
         }
         else
         {
@@ -131,28 +135,62 @@
 
     private async Task AddQuestion()
     {
-        var newQuestion = new NewQuestionViewModel
-            {
-                Question = quiz.Question,
-                Answer1 = quiz.Answer1,
-                Answer2 = quiz.Answer2,
-                Answer3 = quiz.Answer3,
-                Answer4 = quiz.Answer4,
-                CorrectAnswer = quiz.CorrectAnswer,
-                QuizImageUrl = quiz.QuizImageUrl
-            };
-        quizList.Add(newQuestion);
-        await form.ResetAsync();
-        hasQuestion = true;
+        var newQuestion = new NewQuestionViewModel(quiz);
 
+
+        if (options.MediaQuestion)
+        {
+            newQuestion.QuizImageUrl = quiz.QuizImageUrl;
+        }
+
+        quizList.Add(newQuestion);
+
+        await form.ResetAsync();
+        options.HasQuestion = true;
         StateHasChanged();
+
+        //Reset
+        // Resetting the quiz object to its default state
+        // quiz.Question = string.Empty;
+        // quiz.Answer1 = string.Empty;
+        // quiz.Answer2 = string.Empty;
+        // quiz.Answer3 = string.Empty;
+        // quiz.Answer4 = string.Empty;
+        // quiz.QuizImageUrl = string.Empty;
+        options.ResetToDefault();
+        quiz.ResetToDefault();
+
+
+
+    }
+
+
+    private string ReturnTimer(double seconds)
+    {
+        string time;
+        if (options.Timer > 59)
+        {
+            int min = (int)options.Timer / 60;
+            int sec = (int)options.Timer % 60;
+
+
+            time = $"{min} {(options.Timer == 60 ? "minute" : $"minutes {sec} seconds")}";
+
+        }
+        else
+        {
+
+            time = $"{options.Timer} seconds";
+        }
+
+        return time;
     }
 }
 
 @* TODO:
-    IMG not required
-    Rename add question button
-    Validate att
-    Answer 1 also correct answer?
-    Timer (optional)
+    [] Answer 1 also correct answer?
+    [] IMG not required
+    [/] Validate frontend
+    [X] Timer (optional)
+    [X] Rename add question button
 *@

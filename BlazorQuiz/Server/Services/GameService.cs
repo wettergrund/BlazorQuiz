@@ -55,29 +55,30 @@ namespace BlazorQuiz.Server.Services
             await _context.SaveChangesAsync();
 
             // Create new questions and bind them to the quiz.
-            foreach (var questionViewModel in questions)
+            foreach (var question in questions)
             {
-                var media = await _mediaService.GetMediaByIdAsync(Guid.Parse(questionViewModel.QuizImageUrl));
-                int mediaID = media.Id;
+               
 
                 var newQuestion = new QuestionModel
                 {
-                    Question = questionViewModel.Question,
-                    Answer1 = questionViewModel.Answer1,
-                    Answer2 = questionViewModel.Answer2,
-                    Answer3 = questionViewModel.Answer3,
-                    Answer4 = questionViewModel.Answer4,
+                    Question = question.Question,
+                    Answer1 = question.Answer1,
+                    Answer2 = question.Answer2,
+                    Answer3 = question.Answer3,
+                    Answer4 = question.Answer4,
                     QuizRefId = newQuiz.PublicId
                 };
 
-                if (mediaID > 0)
+                if (!string.IsNullOrEmpty(question.QuizImageUrl))
                 {
+
+                    var media = await _mediaService.GetMediaByIdAsync(Guid.Parse(question.QuizImageUrl));
+                    int mediaID = media.Id;
+                
                     newQuestion.MediaRefId = mediaID;
 
-                }
-                else
-                {
                     newQuestion.MediaRefId = 0;
+                
                 }
 
                 // Add the new question to the context
