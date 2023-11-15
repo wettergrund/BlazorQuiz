@@ -12,10 +12,7 @@ Welcome
 <AuthorizeView>
 	<Authorized>
 		<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateQuiz">Create Quiz</MudButton>
-		<div>
-			<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="JoinQuiz">Join Quiz</MudButton>
-			<MudTextField T="string" Label="Insert game code to join" @bind-Value="gameCode" For="@(() => gameCode)" />
-		</div>
+		<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="JoinQuiz">Join Quiz</MudButton>
 		<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ViewQuiz">See All Your Quizzes</MudButton>
 	</Authorized>
 	<NotAuthorized>
@@ -34,7 +31,7 @@ Welcome
 	}
 	private void JoinQuiz()
 	{
-		_navigationManager.NavigateTo("/game/{id}");
+		_navigationManager.NavigateTo("/joinquiz");
 	}
 	private void ViewQuiz()
 	{
