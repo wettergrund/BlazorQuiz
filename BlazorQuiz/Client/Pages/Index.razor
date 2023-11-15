@@ -8,12 +8,14 @@
 
 Welcome
 
-<div class ="ma-5 d-flex justify-center">
+<div class="d-flex align-center justify-center">
 <AuthorizeView>
 	<Authorized>
-		<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateQuiz">Create Quiz</MudButton>
-		<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="JoinQuiz">Join Quiz</MudButton>
-		<MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ViewQuiz">See All Your Quizzes</MudButton>
+		 <MudItem xs="12" Class="d-flex align-center justify-center">
+				<MudButton Style="width: 300px; height: 200px; margin: 20px;" Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateQuiz">Create Quiz</MudButton>
+				<MudButton Style="width: 300px; height: 200px; margin: 20px;" Variant="Variant.Filled" Color="Color.Primary" OnClick="JoinQuiz">Join Quiz</MudButton>
+				<MudButton Style="width: 300px; height: 200px; margin: 20px;" Variant="Variant.Filled" Color="Color.Primary" OnClick="ViewQuiz">See All Your Quizzes</MudButton>
+		</MudItem>
 	</Authorized>
 	<NotAuthorized>
 		<p>Login to se content</p>

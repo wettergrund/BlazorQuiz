@@ -1,27 +1,29 @@
 ﻿@page "/myquizzes"
 @using BlazorQuiz.Shared.ViewModels
 @inject HttpClient _http
+@inject NavigationManager _navigationManager
 
-<h3>UserCreatedQuizComponent</h3>
-
-<div>
-    <AuthorizeView>
-        <Authorized>
-            <ul>
-            @foreach (var item in createdQuizList)
-            {
-                    <li><MudLink Href='@string.Format("/myquizzes/{0}", item.PublicId)' Color=Color.Inherit Underline="Underline.None">@item.Name</MudLink></li>
-            }
-            </ul>
-        </Authorized>
-        <NotAuthorized>
-            <p>Login to view data</p>
-        </NotAuthorized>
-    </AuthorizeView>
+<div class="ma-5 d-flex align-center justify-center">
+    <MudGrid Class="d-flex align-center justify-center">
+        <MudText Typo="Typo.h4">Your Quizzes</MudText>
+        <MudItem xs="12" Class="d-flex align-center justify-center">
+            <MudPaper Width="500px">
+                <MudList Clickable="true">
+                    @foreach (var item in createdQuizList){
+                        <MudListItem>
+                            <MudLink Class="d-flex align-center justify-center" Href='@string.Format("/myquizzes/{0}", item.PublicId)' Color=Color.Inherit Underline="Underline.None">@item.Name</MudLink>
+                        </MudListItem>
+                        <MudDivider />
+                    }
+                </MudList>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
 </div>
 
 @code {
     List<UserCreatedQuizViewModel>? createdQuizList = new List<UserCreatedQuizViewModel>();
+    UserCreatedQuizViewModel? selected = new UserCreatedQuizViewModel();
 
     protected override async Task OnInitializedAsync()
     {
@@ -29,4 +31,8 @@
         createdQuizList = await response.Content.ReadFromJsonAsync<List<UserCreatedQuizViewModel>>();
     }
 
+    // private async EventCallback SelectedOnClick(UserCreatedQuizViewModel x)
+    // {
+    //     _navigationManager.NavigateTo(string.Format("/myquizzes/{0}", x.PublicId));    
+    // }
 }

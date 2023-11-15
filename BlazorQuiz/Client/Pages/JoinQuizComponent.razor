@@ -1,6 +1,26 @@
 ﻿@page "/joinquiz"
-<h3>JoinGameComponent</h3>
+
+<div class="ma-5 d-flex align-center justify-center">
+    <MudGrid Class="d-flex align-center justify-center">
+        <MudText Typo="Typo.h4">Join Quiz</MudText>
+        <MudItem xs="12" Class="d-flex align-center justify-center">
+            <MudPaper Width="500px" Class="d-block pa-12">
+                <MudText Typo="Typo.h5">Join Quiz</MudText>
+                <MudTextField T="string" Label="Enter Quiz link" @bind-Value="gameId" For="@(() => gameId)" Required="true" RequiredError="Enter quiz link!"/>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" Class="d-flex align-center justify-center">
+            <MudButton Style="width: 200px; height: 100px;" Variant="Variant.Filled" Color="Color.Primary" OnClick="JoinQuiz">Join Quiz</MudButton>
+        </MudItem>
+    </MudGrid>
+</div>
+
 
 @code {
+    string? gameId;
 
+    private async Task JoinQuiz()
+    {
+        
+    }
 }
