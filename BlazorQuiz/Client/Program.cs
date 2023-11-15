@@ -2,6 +2,7 @@ using Blazored.LocalStorage;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.Http;
 using MudBlazor.Services;
 
 namespace BlazorQuiz.Client
@@ -17,6 +18,8 @@ namespace BlazorQuiz.Client
             builder.Services.AddBlazoredLocalStorage();
             // Register IHttpContextAccessor in the dependency injection container
             builder.Services.AddHttpContextAccessor();
+            builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpContextAccessor>().HttpContext!);
 
             builder.Services.AddHttpClient("BlazorQuiz.ServerAPI", client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
                 .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
