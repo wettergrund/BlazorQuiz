@@ -27,12 +27,12 @@ namespace BlazorQuiz.Server.Controllers
 
             return Ok(quizViewModel);
         }
-        [HttpPost("create/{title}")]
-        public async Task<IActionResult> PostQuiz(string title, [FromBody] List<NewQuestionViewModel> questions, int seconds = 0)
+        [HttpPost("create")]
+        public async Task<IActionResult> PostQuiz([FromBody] NewQuizViewModel quiz)
         {
 
             //Created a new quiz
-            var newQuiz = await _gameService.CreateQuizAsync(title, questions, seconds, UserId);
+            var newQuiz = await _gameService.CreateQuizAsync(quiz.Title, quiz.Questions, quiz.Timer, UserId);
 
             return Ok(newQuiz);
         }
