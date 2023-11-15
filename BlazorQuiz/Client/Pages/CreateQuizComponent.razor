@@ -42,16 +42,15 @@
                     }
 
                 </div>
-                <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateQuiz">Create Quiz</MudButton>
             </MudPaper>
         </MudItem>
         <MudItem xs="12" Class="d-flex align-center justify-center">
     <MudPaper Width="500px" Class="d-block pa-4">
         <MudExpansionPanels>
 
+                @QuizTitle
             @foreach (var item in quizList)
             {
-                @QuizTitle
                 <MudExpansionPanel @key="@item.Question" Text="@item.Question" MaxHeight="150">
                     @item.CorrectAnswer
                 </MudExpansionPanel>
@@ -72,7 +71,9 @@
             
         </MudForm>
     </MudPaper>
+
         </MudItem>
+            <MudButton Disabled="@(!hasQuestion)" Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateQuiz">Create Quiz</MudButton>
         
     </MudGrid>
 
@@ -80,12 +81,15 @@
 
 
 @code{
+    MudForm form;
     private MudTheme Theme = new MudTheme();
     private NewQuestionViewModel quiz = new NewQuestionViewModel();
     private List<NewQuestionViewModel> quizList = new List<NewQuestionViewModel>();
     private string uploadedFileGuid;
-    MudForm form;
+
     bool isValidated = false;
+    bool hasQuestion = false;
+
     double timer = 60;
 
     public string QuizTitle { get; set; }
@@ -139,6 +143,8 @@
             };
         quizList.Add(newQuestion);
         await form.ResetAsync();
+        hasQuestion = true;
+
         StateHasChanged();
     }
 }
