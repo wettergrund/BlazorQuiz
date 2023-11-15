@@ -29,11 +29,11 @@ namespace BlazorQuiz.Server.Controllers
         public async Task<IActionResult> UploadMediaAsync([FromForm] IFormFile file)
         {
 
-            int maxMb = 3;
+            int maxMb = 13;
             long megaByte = 1024 * 1024;
 
             long maxAllowedSizeInBytes = maxMb * megaByte;
-            string[] permittedFileTypes = { ".jpg", ".jpeg", ".png", ".gif" };
+            string[] permittedFileTypes = { ".jpg", ".jpeg", ".png", ".gif", ".mp4" };
             var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
 
             if (file.Length > maxAllowedSizeInBytes)
@@ -41,10 +41,11 @@ namespace BlazorQuiz.Server.Controllers
                 return BadRequest("File size exceeds the allowable limit.");
             }
 
-            if (string.IsNullOrEmpty(extension) || !permittedFileTypes.Contains(extension) || !file.ContentType.StartsWith("image/"))
+            if (string.IsNullOrEmpty(extension) || !permittedFileTypes.Contains(extension) /*|| !file.ContentType.StartsWith("image/")*/)
             {
                 return BadRequest("Invalid file type. Submitted filetype: " + file.ContentType);
             }
+
 
 
             var newMedia = await _mediaService.UploadMediaAsync(file, UserId);

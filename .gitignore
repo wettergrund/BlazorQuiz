@@ -362,3 +362,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /BlazorQuiz/Server/wwwroot/images
+/BlazorQuiz/Server/wwwroot/videos/90ede3be-d786-44b8-8e51-f3c4214c0389.mp4
+/BlazorQuiz/Server/wwwroot/videos
