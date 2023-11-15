@@ -32,7 +32,7 @@ namespace BlazorQuiz.Server.Models
         public virtual QuizModel Quiz { get; set; }
 
         [ForeignKey("Media")]
-        public int MediaRefId { get; set; }
+        public int? MediaRefId { get; set; }
         public virtual MediaModel Media { get; set; }
     }
 }
