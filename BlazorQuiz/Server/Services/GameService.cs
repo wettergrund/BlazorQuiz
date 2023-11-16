@@ -104,7 +104,6 @@ namespace BlazorQuiz.Server.Services
                 
                     newQuestion.MediaRefId = mediaID;
 
-                    newQuestion.MediaRefId = 0;
                 
                 }
 
