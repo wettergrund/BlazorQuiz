@@ -126,6 +126,21 @@ namespace BlazorQuiz.Server.Services
             throw new NotImplementedException();
         }
 
+        public async Task<bool> CheckGuess(GuessCheckViewModel guess)
+        {
+            var correctAnswer = _context.QuestionModels.Where(questions => questions.Id == guess.GuessId).Select(question => question.Answer1).Single();
+
+            if(correctAnswer == guess.Guess)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
         private QuizModel FindQuiz(int refId)
         {
             QuizModel? game = _context.Quizzes

@@ -48,6 +48,13 @@ namespace BlazorQuiz.Server.Controllers
 
             return Ok(newGame);
         }
+        [HttpPost("guess")]
+        public async Task<IActionResult> GuessCheck([FromBody] GuessCheckViewModel guess)
+        {
+            var isCorrect = await _gameService.CheckGuess(guess);
+
+            return Ok(isCorrect);
+        }
 
         [HttpPut]
         public IActionResult UpdateGame (int gameId, string gameState)
