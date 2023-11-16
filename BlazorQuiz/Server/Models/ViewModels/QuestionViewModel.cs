@@ -36,6 +36,7 @@ namespace BlazorQuiz.Server.ViewModels
             var mediaUrl = context.MediaModels.Where(m => m.Id == questions.MediaRefId).Select(m => m.Path).FirstOrDefault();
 
             QuizMediaUrl = mediaUrl;
+            Id = questions.Id;
 
         }
         private static Random _random = new Random();
@@ -45,6 +46,7 @@ namespace BlazorQuiz.Server.ViewModels
         public string Answer3 { get; set; }
         public string Answer4 { get; set; }
         public string? QuizMediaUrl { get; set; } = string.Empty;
+        public int Id { get; set; }
 
 
         private void Shuffle(List<string> list)
