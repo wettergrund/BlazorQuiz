@@ -1,4 +1,8 @@
 ﻿@page "/joinquiz"
+@using BlazorQuiz.Shared.ViewModels;
+@using Microsoft.AspNetCore.Http;
+@inject HttpClient _http
+@inject NavigationManager _navigationManager
 
 <div class="ma-5 d-flex align-center justify-center">
     <MudGrid Class="d-flex align-center justify-center">
@@ -10,7 +14,7 @@
             </MudPaper>
         </MudItem>
         <MudItem xs="12" Class="d-flex align-center justify-center">
-            <MudButton Style="width: 200px; height: 100px;" Variant="Variant.Filled" Color="Color.Primary" OnClick="JoinQuiz">Join Quiz</MudButton>
+            <MudButton Style="width: 200px; height: 100px;" Variant="Variant.Filled" Color="Color.Primary" OnClick="JoinQuiz">Start Quiz</MudButton>
         </MudItem>
     </MudGrid>
 </div>
@@ -21,6 +25,10 @@
 
     private async Task JoinQuiz()
     {
-        
+        var response = await _http.PostAsJsonAsync($"api/game/newgame", gameId);
+        if (response.IsSuccessStatusCode)
+        {
+            _navigationManager.NavigateTo($"/game/{gameId}");
+        }
     }
 }
