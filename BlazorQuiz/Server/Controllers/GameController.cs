@@ -18,12 +18,12 @@ namespace BlazorQuiz.Server.Controllers
             _gameService = gameService;
         }
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserQuiz(int id)
+        public async Task<IActionResult> GetUserQuiz(string id)
         {
             // Get a specific game
 
             //Get a game
-            var quizViewModel = await _gameService.GetUserQuizAsync(id);
+            var quizViewModel = await _gameService.GetQuizByPublicIdAsync(id);
 
             return Ok(quizViewModel);
         }
@@ -37,14 +37,14 @@ namespace BlazorQuiz.Server.Controllers
             return Ok(newQuiz);
         }
 
-        [HttpPost("newgame/{gameId}")]
-        public async Task<IActionResult> PostNewGame(int gameId)
+        [HttpPost("newgame/{quizId}")]
+        public async Task<IActionResult> PostNewGame(string quizId)
         {
 
             //Create a new game.
             //Use Identity to bind to creator user
 
-            var newGame = await _gameService.CreateNewGameAsync(gameId, UserId);
+            var newGame = await _gameService.CreateNewGameAsync(quizId, UserId);
 
             return Ok(newGame);
         }

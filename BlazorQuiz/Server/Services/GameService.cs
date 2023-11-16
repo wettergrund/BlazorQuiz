@@ -1,7 +1,10 @@
 ﻿using BlazorQuiz.Server.Data;
 using BlazorQuiz.Server.Models;
 using BlazorQuiz.Shared.ViewModels;
+using BlazorQuiz.Server.ViewModels;
+
 using Microsoft.EntityFrameworkCore;
+using BlazorQuiz.Server.Models.ViewModels;
 
 namespace BlazorQuiz.Server.Services
 {
@@ -17,7 +20,7 @@ namespace BlazorQuiz.Server.Services
             _mediaService = mediaService;
 
         }
-        public async Task<UserQuizModel> CreateNewGameAsync(int quizId, string userId)
+        public async Task<QuizViewModel> CreateNewGameAsync(string quizId, string userId)
         {
             // Use the DbHelper or an equivalent repository to find the quiz based on ID
             var quiz = FindQuiz(quizId);
@@ -35,8 +38,32 @@ namespace BlazorQuiz.Server.Services
             _context.UserQuizModels.Add(newGame);
             await _context.SaveChangesAsync();
 
+            // Questions belonging to specific quiz
+            List<QuestionModel> questionsByQuiz = _context.QuestionModels.Where(q => q.QuizRefId == quiz.PublicId).ToList();
+
+            //List to be filled with questions
+            List<QuestionViewModel> quizQuestions = new();
+
+            //Turn questions into viewmodel
+            foreach (var question in questionsByQuiz)
+            {
+                QuestionViewModel questionViewModel = new(_context, question);
+
+                quizQuestions.Add(questionViewModel);
+            }
+
+
+            QuizViewModel displayQuiz = new()
+            {
+                title = quiz.Name,
+                timer = quiz.Timer,
+                publicId = quiz.PublicId,
+                questions = quizQuestions
+            };
+
+
             // Return the newly created game
-            return newGame;
+            return displayQuiz;
         }
 
         public async Task<QuizModel> CreateQuizAsync(string title, List<NewQuestionViewModel> questions, int seconds, string userId)
@@ -92,12 +119,12 @@ namespace BlazorQuiz.Server.Services
             return newQuiz;
         }
 
-        public async Task<GameWithQuizViewModel> GetUserQuizAsync(int id)
+        public async Task<GameWithQuizViewModel> GetQuizByPublicIdAsync(string id)
         {
             var userQuiz = await _context.UserQuizModels
                              .Include(uq => uq.Quiz)
                              .ThenInclude(q => q.Questions)
-                             .FirstOrDefaultAsync(game => game.Id == id);
+                             .FirstOrDefaultAsync(game => game.QuizRefPublicId == id);
 
             if (userQuiz == null)
             {
@@ -126,10 +153,10 @@ namespace BlazorQuiz.Server.Services
             throw new NotImplementedException();
         }
 
-        private QuizModel FindQuiz(int refId)
+        private QuizModel FindQuiz(string refId)
         {
             QuizModel? game = _context.Quizzes
-                .Where(x => x.Id == refId)
+                .Where(x => x.PublicId == refId)
                 .FirstOrDefault();
 
             return game;
