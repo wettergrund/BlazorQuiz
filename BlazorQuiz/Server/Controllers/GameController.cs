@@ -56,7 +56,7 @@ namespace BlazorQuiz.Server.Controllers
             return Ok(isCorrect);
         }
 
-        [HttpPut]
+        [HttpPut("gameresult")]
         public IActionResult UpdateGame (int gameId, string gameState)
         {
             // Update game state + return guess result.

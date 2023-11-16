@@ -58,7 +58,8 @@ namespace BlazorQuiz.Server.Services
                 title = quiz.Name,
                 timer = quiz.Timer,
                 publicId = quiz.PublicId,
-                questions = quizQuestions
+                questions = quizQuestions,
+                gameId = newGame.Id
             };
 
 
