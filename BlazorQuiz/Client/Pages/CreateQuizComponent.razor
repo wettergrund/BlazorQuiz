@@ -11,6 +11,7 @@
 
 <div class="ma-5 d-flex align-center justify-center">
     @* <MudImage Src="/images/317f578a-0daa-402d-b665-79625b337669.png" Width="200" Height="150" Alt="Swedish Farm House" Elevation="25" Class="rounded-lg ma-4" /> *@
+    @* <button @onclick=CreateGame>Create Game</button> *@
     <MudGrid Class="d-flex align-center justify-center">
         <MudText Typo="Typo.h4">New Quiz</MudText>
         <MudItem xs="12" Class="d-flex align-center justify-center">
@@ -36,7 +37,7 @@
                     @options.QuizTitle
                     @foreach (var item in quizList)
                     {
-                        <MudExpansionPanel @key="@item.Question" Text="@item.Question" MaxHeight="150">
+                        <MudExpansionPanel @key="item.Question" Text="@item.Question" MaxHeight="150">
                             @item.CorrectAnswer
                         </MudExpansionPanel>
                     }
@@ -49,7 +50,7 @@
                     <MudTextField Variant="Variant.Outlined" T="string" Label="Correct answer" @bind-Value="quiz.Answer1" For="@(() => quiz.Answer1)" Required="true" RequiredError="Required" />
                     <MudTextField T="string" Label="Incorrect answer 1" @bind-Value="quiz.Answer2" For="@(() => quiz.Answer2)" Required="true" RequiredError="Required" />
                     <MudTextField T="string" Label="Incorrect answer 2" @bind-Value="quiz.Answer3" For="@(() => quiz.Answer3)" Required="true" RequiredError="Required" />
-                    <MudTextField Immediate="true" T="string" Label="Incorrect answer 4" @bind-Value="quiz.Answer4" For="@(() => quiz.Answer4)" Required="true" RequiredError="Required" OnChange="@(()=>form.Validate())" />
+                    <MudTextField Immediate="true" T="string" Label="Incorrect answer 3" @bind-Value="quiz.Answer4" For="@(() => quiz.Answer4)" Required="true" RequiredError="Required" OnChange="@(()=>form.Validate())" />
                     <MudExpansionPanels Class="mt-3">
                         <MudExpansionPanel>
                             <TitleContent>
@@ -92,11 +93,17 @@
     private NewQuestionViewModel quiz = new NewQuestionViewModel();
     private List<NewQuestionViewModel> quizList = new List<NewQuestionViewModel>();
     MudForm? form;
+   
 
     QuizOptions options = new QuizOptions(); //Set of settings to make the quiz work
 
+    //TEST!!
 
-
+    // private async Task CreateGame()
+    // {
+    //     var content = new StringContent("", Encoding.UTF8, "application/json");
+    //     var response = await _http.PostAsync($"api/game/newgame/92bd5fac-7a2d-406e-8363-163789407370", content);
+    // }
 
     protected override async Task OnInitializedAsync()
     {
@@ -149,18 +156,8 @@
         options.HasQuestion = true;
         StateHasChanged();
 
-        //Reset
-        // Resetting the quiz object to its default state
-        // quiz.Question = string.Empty;
-        // quiz.Answer1 = string.Empty;
-        // quiz.Answer2 = string.Empty;
-        // quiz.Answer3 = string.Empty;
-        // quiz.Answer4 = string.Empty;
-        // quiz.QuizImageUrl = string.Empty;
         options.ResetToDefault();
         quiz.ResetToDefault();
-
-
 
     }
 
