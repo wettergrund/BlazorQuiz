@@ -2,12 +2,9 @@
 {
     public class GameQuizViewModel
     {
-        public string Question { get; set; }
-        public string Answer1 { get; set; }
-        public string Answer2 { get; set; }
-        public string Answer3 { get; set; }
-        public string Answer4 { get; set; }
-        public string? QuizMediaUrl { get; set; } = string.Empty;
-        public int Id { get; set; }
+        public string title { get; set; }
+        public string? publicId { get; set; }
+        public int timer { get; set; }
+        public List<QuestionSharedViewModel>? questions { get; set; }
     }
 }

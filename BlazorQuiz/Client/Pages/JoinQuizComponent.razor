@@ -22,14 +22,8 @@
 
 @code {
     string? gameId;
-    List<GameQuizViewModel> quizDatas = new List<GameQuizViewModel>();
-    private async Task JoinQuiz()
+    private void JoinQuiz()
     {
-        var response = await _http.PostAsJsonAsync($"api/game/newgame/{gameId}", gameId);
-        if (response.IsSuccessStatusCode)
-        {
-            quizDatas = await response.Content.ReadFromJsonAsync<List<GameQuizViewModel>>();
-            _navigationManager.NavigateTo($"/game/{gameId}");
-        }
+        _navigationManager.NavigateTo($"/game/{gameId}");
     }
 }
