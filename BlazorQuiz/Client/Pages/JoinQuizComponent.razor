@@ -25,7 +25,7 @@
 
     private async Task JoinQuiz()
     {
-        var response = await _http.PostAsJsonAsync($"api/game/newgame", gameId);
+        var response = await _http.PostAsJsonAsync($"api/game/newgame/{gameId}", gameId);
         if (response.IsSuccessStatusCode)
         {
             _navigationManager.NavigateTo($"/game/{gameId}");

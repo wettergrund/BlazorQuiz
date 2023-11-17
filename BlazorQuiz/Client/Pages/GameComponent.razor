@@ -9,20 +9,32 @@
 
 <div class="ma-5 d-flex align-center justify-center">
     <MudGrid Class="d-flex align-center justify-center">
-        <MudText Typo="Typo.h4">Quiz: @* @quizData.First().Title *@ </MudText>
+        <MudText Typo="Typo.h4">Lets Go</MudText>
         <MudItem xs="12" Class="d-flex align-center justify-center">
             <MudGrid>
-                <MudItem xs="6">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="d-flex align-center justify-center mud-width-full py-8">1</MudButton>
+                <MudItem xs="12" Class="d-flex align-center justify-center">
+                    <MudCard Style="width: 80vw; background: gray;">
+                        <MudCardMedia Image="@quizData[count].QuizMediaUrl" Height="300" />
+                        <MudCardContent>
+                            <MudText Class="d-flex align-center justify-center" Typo="Typo.h5">@quizData[count].Question</MudText>
+                        </MudCardContent>
+                    </MudCard>
                 </MudItem>
-                <MudItem xs="6">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="d-flex align-center justify-center mud-width-full py-8">2</MudButton>
+            </MudGrid>
+        </MudItem>
+        <MudItem xs="12" Class="d-flex align-center justify-center" Style="max-width: 80vw">
+            <MudGrid>
+                <MudItem xs="6" Class="d-flex align-center justify-center">
+                    <MudButton OnClick="SubmitAnswer1" Variant="Variant.Filled" Color="@alt1" Class="d-flex align-center justify-center mud-width-full py-8">1 @* @quizData[count].Answer1 *@</MudButton>
                 </MudItem>
-                <MudItem xs="6">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="d-flex align-center justify-center mud-width-full py-8">3</MudButton>
+                <MudItem xs="6" Class="d-flex align-center justify-center">
+                    <MudButton OnClick="SubmitAnswer2" Variant="Variant.Filled" Color="@alt2" Class="d-flex align-center justify-center mud-width-full py-8">2 @* @quizData[count].Answer2 *@</MudButton>
                 </MudItem>
-                <MudItem xs="6">
-                    <MudButton Variant="Variant.Filled" Color="Color.Primary" Class="d-flex align-center justify-center mud-width-full py-8">4</MudButton>
+                <MudItem xs="6" Class="d-flex align-center justify-center">
+                    <MudButton OnClick="SubmitAnswer3" Variant="Variant.Filled" Color="@alt3" Class="d-flex align-center justify-center mud-width-full py-8">3 @* @quizData[count].Answer3 *@</MudButton>
+                </MudItem>
+                <MudItem xs="6" Class="d-flex align-center justify-center">
+                    <MudButton OnClick="SubmitAnswer4" Variant="Variant.Filled" Color="@alt4" Class="d-flex align-center justify-center mud-width-full py-8">4 @* @quizData[count].Answer4 *@</MudButton>
                 </MudItem>
             </MudGrid>
         </MudItem>
@@ -31,14 +43,122 @@
 
 
 @code {
-	[Parameter]
-	public string id { get; set; }
-	List<NewQuizViewModel>? quizData = new List<NewQuizViewModel>();
+    [Parameter]
+    public string id { get; set; }
 
-	protected override async Task OnInitializedAsync()
-	{
-		var response = await _httpClient.GetAsync($"api/game/{id}");
-		quizData = await response.Content.ReadFromJsonAsync<List<NewQuizViewModel>>();
-	}
+    MudBlazor.Color correct = Color.Success;
+    MudBlazor.Color wrong = Color.Error;
+    MudBlazor.Color primary = Color.Primary;
 
+    MudBlazor.Color alt1 = Color.Primary;
+    MudBlazor.Color alt2 = Color.Primary;
+    MudBlazor.Color alt3 = Color.Primary;
+    MudBlazor.Color alt4 = Color.Primary;
+
+
+    bool isCorrect;
+    int count = 0;
+    int score;
+
+    List<GameQuizViewModel>? quizData = new List<GameQuizViewModel>();
+    GuessCheckViewModel guess = new GuessCheckViewModel();
+    List<GuessCheckViewModel> guesses = new List<GuessCheckViewModel>();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var response = await _httpClient.GetAsync($"api/game/{id}");
+        quizData = await response.Content.ReadFromJsonAsync<List<GameQuizViewModel>>();
+    }
+
+    private async Task SubmitAnswer1()
+    {
+        //Sets guess and 
+        guess.Guess = quizData[count].Answer1;
+        guess.GuessId = quizData[count].Id;
+        //Call DB to check answer
+        await GuessCheck(guess);
+        if (isCorrect == true)     
+            alt1 = correct;      
+        else
+            alt1 = wrong;
+        //then add to counter to get next question
+        await Task.Delay(3000);
+        alt1 = primary;
+        if (count < quizData.Count)
+            count++;
+        else
+            SubmitQuiz();
+    }
+
+    private async Task SubmitAnswer2()
+    {
+        //Sets guess and
+        guess.Guess = quizData[count].Answer1;
+        guess.GuessId = quizData[count].Id;
+        //Call DB to check answer
+        await GuessCheck(guess);
+        if (isCorrect == true)
+            alt2 = correct;
+        else
+            alt2 = wrong;
+        //then add to counter to get next question
+        await Task.Delay(3000);
+        alt2 = primary;
+        if (count < quizData.Count)
+            count++;
+        else
+            SubmitQuiz();
+    }
+
+    private async Task SubmitAnswer3()
+    {
+        //Sets guess and
+        guess.Guess = quizData[count].Answer1;
+        guess.GuessId = quizData[count].Id;
+        //Call DB to check answer
+        await GuessCheck(guess);
+        if (isCorrect == true)
+            alt3 = correct;
+        else
+            alt3 = wrong;
+        //then add to counter to get next question
+        await Task.Delay(3000);
+        alt3 = primary;
+        if (count < quizData.Count)
+            count++;
+        else
+            SubmitQuiz();
+    }
+
+    private async Task SubmitAnswer4()
+    {
+        //Sets guess and
+        guess.Guess = quizData[count].Answer1;
+        guess.GuessId = quizData[count].Id;
+        //Call DB to check answer
+        await GuessCheck(guess);
+        if (isCorrect == true)
+            alt4 = correct;
+        else
+            alt4 = wrong;
+        //then add to counter to get next question
+        await Task.Delay(3000);
+        alt4 = primary;
+        if (count < quizData.Count)
+            count++;
+        else
+            SubmitQuiz();
+    }
+
+    private async Task GuessCheck(GuessCheckViewModel guess)
+    {
+        var response = await _httpClient.PostAsJsonAsync($"api/guess", guess);
+        isCorrect = await response.Content.ReadFromJsonAsync<bool>();
+    }
+
+    private async Task SubmitQuiz()
+    {
+        
+    }
 }
