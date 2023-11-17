@@ -56,11 +56,44 @@ namespace BlazorQuiz.Server.Controllers
             return Ok(isCorrect);
         }
 
-        [HttpPut]
-        public IActionResult UpdateGame (int gameId, string gameState)
+        [HttpPut("gameresult")]
+        public async Task<IActionResult> UpdateGame (int gameId, List<GuessCheckViewModel> guesses)
         {
-            // Update game state + return guess result.
-            return Ok();
+
+
+            /* 1. Get UserGuiz(Game) by gameID 
+             * 2. Get all questions with QuizRefId == UserGuiz.QuizRefPublicId
+             * 3. Verify number of guesses == questions.
+             * 4. Foreach guess, verify guesses and update score for gameId
+             */
+
+
+            //Find UserQuiz and questions related to Quiz Id
+            var userGame = _gameService.FindUserQuiz(gameId);
+            var questions = _gameService.FindQuestionsByQuizRef(userGame.QuizRefPublicId);
+
+            int userGuesses = guesses.Count();
+            int quizGuesses = questions.Count();
+
+
+            //Make sure sent in questions are equal to questions related to quiz
+            if (!userGuesses.Equals(quizGuesses)) {
+
+                return BadRequest("Number of guesses does not match");
+
+            }
+            else if (userGuesses.Equals(quizGuesses)) {
+
+                //Update score and return game info.
+                var updateScore = await _gameService.FinishedGame(userGame , guesses);
+
+                return Ok(updateScore.Score);
+            
+            }
+
+
+
+            return BadRequest("Problem to update game");
         }
 
 

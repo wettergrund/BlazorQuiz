@@ -8,5 +8,6 @@ namespace BlazorQuiz.Server.Models.ViewModels
         public string? publicId { get; set; }
         public int timer { get; set; }
         public List<QuestionViewModel> questions { get; set; }
+        public int gameId { get; set; }
     }
 }

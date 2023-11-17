@@ -58,7 +58,8 @@ namespace BlazorQuiz.Server.Services
                 title = quiz.Name,
                 timer = quiz.Timer,
                 publicId = quiz.PublicId,
-                questions = quizQuestions
+                questions = quizQuestions,
+                gameId = newGame.Id
             };
 
 
@@ -165,6 +166,33 @@ namespace BlazorQuiz.Server.Services
                 return false;
             }
         }
+        public async Task<UserQuizModel> FinishedGame(UserQuizModel quiz, List<GuessCheckViewModel> guesses)
+        {
+            //throw new NotImplementedException();
+
+            int score = 0;
+
+            foreach(var guess in guesses)
+            {
+                bool guessStatus = await CheckGuess(guess);
+
+                if(guessStatus == true)
+                {
+                    score++;
+                }
+            }
+
+            var quizToUpdate = _context.UserQuizModels.FirstOrDefault(q => q.Id == quiz.Id);
+
+            quizToUpdate.Score = score;
+            await _context.SaveChangesAsync();
+
+            //Update game with
+
+            return quizToUpdate;
+
+
+        }
 
 
         private QuizModel FindQuiz(string refId)
@@ -174,6 +202,20 @@ namespace BlazorQuiz.Server.Services
                 .FirstOrDefault();
 
             return game;
+        }
+
+        public UserQuizModel FindUserQuiz(int id)
+        {
+            UserQuizModel? game = _context.UserQuizModels.Where(g => g.Id == id).Last();
+
+            return game;
+        }
+
+        public List<QuestionModel> FindQuestionsByQuizRef(string quizRef) { 
+            
+            var questions = _context.QuestionModels.Where(q => q.QuizRefId == quizRef).ToList();
+            return questions;
+        
         }
     }
 }
