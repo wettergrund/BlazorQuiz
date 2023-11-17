@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Http;
 @inject HttpClient _http
 @inject NavigationManager _navigationManager
+@inject ILocalStorageService _localStorage
 
 <div class="ma-5 d-flex align-center justify-center">
     <MudGrid Class="d-flex align-center justify-center">
@@ -19,15 +20,15 @@
     </MudGrid>
 </div>
 
-
 @code {
     string? gameId;
-
+    List<GameQuizViewModel> quizDatas = new List<GameQuizViewModel>();
     private async Task JoinQuiz()
     {
         var response = await _http.PostAsJsonAsync($"api/game/newgame/{gameId}", gameId);
         if (response.IsSuccessStatusCode)
         {
+            quizDatas = await response.Content.ReadFromJsonAsync<List<GameQuizViewModel>>();
             _navigationManager.NavigateTo($"/game/{gameId}");
         }
     }

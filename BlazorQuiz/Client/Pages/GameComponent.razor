@@ -45,6 +45,12 @@
 @code {
     [Parameter]
     public string id { get; set; }
+    // [Parameter]
+    // public List<GameQuizViewModel> quizData { get; set; }
+
+    bool isCorrect;
+    int count = 0;
+    int score;
 
     MudBlazor.Color correct = Color.Success;
     MudBlazor.Color wrong = Color.Error;
@@ -54,11 +60,6 @@
     MudBlazor.Color alt2 = Color.Primary;
     MudBlazor.Color alt3 = Color.Primary;
     MudBlazor.Color alt4 = Color.Primary;
-
-
-    bool isCorrect;
-    int count = 0;
-    int score;
 
     List<GameQuizViewModel>? quizData = new List<GameQuizViewModel>();
     GuessCheckViewModel guess = new GuessCheckViewModel();
@@ -73,18 +74,19 @@
 
     private async Task SubmitAnswer1()
     {
-        //Sets guess and 
+        //Sets guess and call DB to check answer
         guess.Guess = quizData[count].Answer1;
         guess.GuessId = quizData[count].Id;
-        //Call DB to check answer
         await GuessCheck(guess);
+        // Green if correct, red if wrong
         if (isCorrect == true)     
-            alt1 = correct;      
+            alt1 = correct;  
         else
             alt1 = wrong;
-        //then add to counter to get next question
+        //Delay to veiw result then reset colour
         await Task.Delay(3000);
         alt1 = primary;
+        //Check if there are more questions left. If not submit score to DB.
         if (count < quizData.Count)
             count++;
         else
@@ -93,18 +95,19 @@
 
     private async Task SubmitAnswer2()
     {
-        //Sets guess and
-        guess.Guess = quizData[count].Answer1;
+        //Sets guess and call DB to check answer
+        guess.Guess = quizData[count].Answer2;
         guess.GuessId = quizData[count].Id;
-        //Call DB to check answer
         await GuessCheck(guess);
+        // Green if correct, red if wrong
         if (isCorrect == true)
             alt2 = correct;
         else
             alt2 = wrong;
-        //then add to counter to get next question
+        //Delay to veiw result then reset colour
         await Task.Delay(3000);
         alt2 = primary;
+        //Check if there are more questions left. If not submit score to DB.
         if (count < quizData.Count)
             count++;
         else
@@ -113,18 +116,19 @@
 
     private async Task SubmitAnswer3()
     {
-        //Sets guess and
-        guess.Guess = quizData[count].Answer1;
+        //Sets guess and call DB to check answer
+        guess.Guess = quizData[count].Answer3;
         guess.GuessId = quizData[count].Id;
-        //Call DB to check answer
         await GuessCheck(guess);
+        // Green if correct, red if wrong
         if (isCorrect == true)
             alt3 = correct;
         else
             alt3 = wrong;
-        //then add to counter to get next question
+        //Delay to veiw result then reset colour
         await Task.Delay(3000);
         alt3 = primary;
+        //Check if there are more questions left. If not submit score to DB.
         if (count < quizData.Count)
             count++;
         else
@@ -133,18 +137,19 @@
 
     private async Task SubmitAnswer4()
     {
-        //Sets guess and
-        guess.Guess = quizData[count].Answer1;
+        //Sets guess and call DB to check answer
+        guess.Guess = quizData[count].Answer4;
         guess.GuessId = quizData[count].Id;
-        //Call DB to check answer
         await GuessCheck(guess);
+        // Green if correct, red if wrong
         if (isCorrect == true)
             alt4 = correct;
         else
             alt4 = wrong;
-        //then add to counter to get next question
+        //Delay to veiw result then reset colour
         await Task.Delay(3000);
         alt4 = primary;
+        //Check if there are more questions left. If not submit score to DB.
         if (count < quizData.Count)
             count++;
         else
