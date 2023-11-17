@@ -57,7 +57,7 @@ namespace BlazorQuiz.Server.Controllers
         }
 
         [HttpPut("gameresult")]
-        public IActionResult UpdateGame (int gameId, List<GuessCheckViewModel> guesses)
+        public async Task<IActionResult> UpdateGame (int gameId, List<GuessCheckViewModel> guesses)
         {
 
 
@@ -85,9 +85,9 @@ namespace BlazorQuiz.Server.Controllers
             else if (userGuesses.Equals(quizGuesses)) {
 
                 //Update score and return game info.
-                var updateScore = _gameService.FinishedGame(userGame , guesses);
+                var updateScore = await _gameService.FinishedGame(userGame , guesses);
 
-                return Ok(updateScore);
+                return Ok(updateScore.Score);
             
             }
 
