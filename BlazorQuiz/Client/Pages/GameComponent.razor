@@ -5,7 +5,10 @@
 @using System.Net.Http.Headers;
 @using BlazorQuiz.Shared.ViewModels;
 @inject HttpClient _httpClient
-@inject ILocalStorageService _localStorage
+@inject ILocalStorageService _localStorage 
+
+@* TODO
+CreateQuiz dosent seam to create questions in DB *@
 
 @if (quizData2.questions != null)
 {
