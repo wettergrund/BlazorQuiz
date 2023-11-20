@@ -7,39 +7,50 @@
 @inject HttpClient _httpClient
 @inject ILocalStorageService _localStorage
 
-<div class="ma-5 d-flex align-center justify-center">
-    <MudGrid Class="d-flex align-center justify-center">
-        <MudText Typo="Typo.h4">@quizData2.title</MudText>
-        <MudItem xs="12" Class="d-flex align-center justify-center">
-            <MudGrid>
-                <MudItem xs="12" Class="d-flex align-center justify-center">
-                    <MudCard Style="width: 80vw; background: gray;">
-                        <MudCardMedia Image="@quizData2.questions[count].QuizMediaUrl" Height="300" />
-                        <MudCardContent>
-                            <MudText Class="d-flex align-center justify-center" Typo="Typo.h5">@quizData2.questions[count].Question</MudText>
-                        </MudCardContent>
-                    </MudCard>
-                </MudItem>
-            </MudGrid>
-        </MudItem>
-        <MudItem xs="12" Class="d-flex align-center justify-center" Style="max-width: 80vw">
-            <MudGrid>
-                <MudItem xs="6" Class="d-flex align-center justify-center">
-                    <MudButton OnClick="SubmitAnswer1" Variant="Variant.Filled" Color="@alt1" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer1</MudButton>
-                </MudItem>
-                <MudItem xs="6" Class="d-flex align-center justify-center">
-                    <MudButton OnClick="SubmitAnswer2" Variant="Variant.Filled" Color="@alt2" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer2</MudButton>
-                </MudItem>
-                <MudItem xs="6" Class="d-flex align-center justify-center">
-                    <MudButton OnClick="SubmitAnswer3" Variant="Variant.Filled" Color="@alt3" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer3</MudButton>
-                </MudItem>
-                <MudItem xs="6" Class="d-flex align-center justify-center">
-                    <MudButton OnClick="SubmitAnswer4" Variant="Variant.Filled" Color="@alt4" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer4</MudButton>
-                </MudItem>
-            </MudGrid>
-        </MudItem>
-    </MudGrid>
-</div>
+@if (quizData2.questions != null)
+{
+    <div class="ma-5 d-flex align-center justify-center">
+        <MudGrid Style="visibility:hidden" Class="d-flex align-center justify-center">
+            <MudText Typo="Typo.h4">@quizData2.title</MudText>
+            <MudItem xs="12" Class="d-flex align-center justify-center">
+                <MudGrid>
+                    <MudItem xs="12" Class="d-flex align-center justify-center">
+                        <MudCard Style="width: 80vw; background: gray;">
+                            <MudCardMedia Image="@quizData2.questions[count].QuizMediaUrl" Height="300" />
+                            <MudCardContent>
+                                <MudText Class="d-flex align-center justify-center" Typo="Typo.h5">@quizData2.questions[count].Question</MudText>
+                            </MudCardContent>
+                        </MudCard>
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+            <MudItem xs="12" Class="d-flex align-center justify-center" Style="max-width: 80vw">
+                <MudGrid>
+                    <MudItem xs="6" Class="d-flex align-center justify-center">
+                        <MudButton OnClick="SubmitAnswer1" Variant="Variant.Filled" Color="@alt1" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer1</MudButton>
+                    </MudItem>
+                    <MudItem xs="6" Class="d-flex align-center justify-center">
+                        <MudButton OnClick="SubmitAnswer2" Variant="Variant.Filled" Color="@alt2" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer2</MudButton>
+                    </MudItem>
+                    <MudItem xs="6" Class="d-flex align-center justify-center">
+                        <MudButton OnClick="SubmitAnswer3" Variant="Variant.Filled" Color="@alt3" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer3</MudButton>
+                    </MudItem>
+                    <MudItem xs="6" Class="d-flex align-center justify-center">
+                        <MudButton OnClick="SubmitAnswer4" Variant="Variant.Filled" Color="@alt4" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer4</MudButton>
+                    </MudItem>
+                </MudGrid>
+            </MudItem>
+        </MudGrid>
+    </div>
+}
+else
+{
+    <div class="ma-5 d-flex align-center justify-center">
+        <p style="padding-top:200px">loading...</p>
+    </div>
+}
+
+
 
 
 @code {
@@ -51,6 +62,7 @@
     //List<QuestionSharedViewModel> questions = new List<QuestionSharedViewModel>();
     GameQuizViewModel quizData2 = new GameQuizViewModel();
 
+    bool gameFinnished = false;
     bool isCorrect;
     int count = 0;
     int score;
@@ -96,7 +108,8 @@
         if (count < quizData2.questions.Count-1)
             count++;
         else
-            SubmitQuiz();
+            await SubmitQuiz();
+        //Send to gamefinished screen to show score
     }
 
     private async Task SubmitAnswer2()
@@ -117,7 +130,8 @@
         if (count < quizData2.questions.Count-1)
             count++;
         else
-            SubmitQuiz();
+        await SubmitQuiz();
+        //Send to gamefinished screen to show score
     }
 
     private async Task SubmitAnswer3()
@@ -138,7 +152,8 @@
         if (count < quizData2.questions.Count-1)
             count++;
         else
-            SubmitQuiz();
+            await SubmitQuiz();
+        //Send to gamefinished screen to show score
     }
 
     private async Task SubmitAnswer4()
@@ -159,17 +174,20 @@
         if (count < quizData2.questions.Count-1)
             count++;
         else
-            SubmitQuiz();
+            await SubmitQuiz();
+        //Send to gamefinished screen to show score
     }
 
     private async Task GuessCheck(GuessCheckViewModel guess)
     {
-        var response = await _httpClient.PostAsJsonAsync($"api/guess", guess);
+        var response = await _httpClient.PostAsJsonAsync($"api/game/guess", guess);
         isCorrect = await response.Content.ReadFromJsonAsync<bool>();
+        guesses.Add(guess);
     }
 
     private async Task SubmitQuiz()
     {
-        
+        var response = await _httpClient.PutAsJsonAsync($"api/game/gameresult", new { gameId = quizData2.gameId, guesses = guesses });
+        // Add code to get data to present in score screen
     }
 }
