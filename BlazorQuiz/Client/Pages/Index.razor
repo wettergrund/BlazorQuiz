@@ -1,23 +1,30 @@
 ﻿@page "/"
-
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @inject NavigationManager _navigationManager
 
 <PageTitle>Index</PageTitle>
 
-<div class="d-flex align-center justify-center">
+
 <AuthorizeView>
 	<Authorized>
+		<div class="d-flex align-center justify-center">
 			<MudItem xs="12" Class="d-flex align-center justify-center" style="padding-top: 20vh">
 				<MudButton Style="width: 300px; height: 200px; margin: 20px;" Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateQuiz">Create Quiz</MudButton>
 				<MudButton Style="width: 300px; height: 200px; margin: 20px;" Variant="Variant.Filled" Color="Color.Primary" OnClick="JoinQuiz">Join Quiz</MudButton>
 				<MudButton Style="width: 300px; height: 200px; margin: 20px;" Variant="Variant.Filled" Color="Color.Primary" OnClick="ViewQuiz">See All Your Quizzes</MudButton>
-		</MudItem>
+			</MudItem>
+		</div>
 	</Authorized>
 	<NotAuthorized>
-		<p>Login to se content</p>
+		<div class="d-flex align-center justify-center">
+			<MudItem xs="12" Class="d-flex align-center justify-center" style="padding-top: 20vh">
+				<MudButton Style="width: 300px; height: 200px; margin: 20px;" Variant="Variant.Filled" Color="Color.Primary" OnClick="Login">Login</MudButton>
+				<MudButton Style="width: 300px; height: 200px; margin: 20px;" Variant="Variant.Filled" Color="Color.Primary" OnClick="Register">Register</MudButton>
+			</MudItem>
+		</div>
 	</NotAuthorized>
 </AuthorizeView>
-</div>
 
 
 @code{
@@ -34,6 +41,14 @@
 	private void ViewQuiz()
 	{
 		_navigationManager.NavigateTo("/myquizzes");
+	}
+	private void Login()
+	{
+		_navigationManager.NavigateTo(" authentication/login");
+	}
+	private void Register()
+	{
+		_navigationManager.NavigateTo(" authentication/register");
 	}
 
 }

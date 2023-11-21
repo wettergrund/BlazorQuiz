@@ -63,16 +63,14 @@ else
 @code {
     [Parameter]
     public string id { get; set; }
-    // [Parameter]
-    // public GameQuizViewModel quizData { get; set; }
 
-    //List<QuestionSharedViewModel> questions = new List<QuestionSharedViewModel>();
     GameQuizViewModel quizData2 = new GameQuizViewModel();
 
     bool gameFinnished = false;
     bool isCorrect;
     int count = 0;
     int score;
+
     MudBlazor.Color success = Color.Success;
     MudBlazor.Color wrong = Color.Error;
     MudBlazor.Color primary = Color.Primary;
@@ -82,7 +80,6 @@ else
     MudBlazor.Color alt3 { get; set; } = Color.Primary;
     MudBlazor.Color alt4 { get; set; } = Color.Primary;
 
-    //List<GameQuizViewModel>? quizData = new List<GameQuizViewModel>();
     GuessCheckViewModel guess = new GuessCheckViewModel();
     List<GuessCheckViewModel> guesses = new List<GuessCheckViewModel>();
 
@@ -92,8 +89,6 @@ else
         // var response = await _httpClient.GetAsync($"api/game/{id}");
         var response = await _httpClient.PostAsJsonAsync($"api/game/newgame/{id}", id);
         quizData2 = await response.Content.ReadFromJsonAsync<GameQuizViewModel>();
-        //questions = quizData2.questions;
-        Console.WriteLine($"Count: {count}, Questions Count: {quizData2.questions.Count}, quiz title: {quizData2.title}");
     }
 
     private async Task SubmitAnswer(string answer, int alternativ)

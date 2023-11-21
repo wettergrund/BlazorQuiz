@@ -5,19 +5,11 @@
 @inject SignOutSessionStateManager SignOutManager
 
 <AuthorizeView>
-    <Authorized>
-      
-        <MudLink Href="/game" Color=Color.Inherit Underline="Underline.None">Play </MudLink>
-        
-  
+    <Authorized>     
+        <MudLink Href="/" Color=Color.Inherit Underline="Underline.None">Home</MudLink>
         <MudSpacer />
-        <MudLink Href="authentication/profile" Color=Color.Inherit Underline="Underline.None">Hello, @context.User.Identity?.Name!</MudLink>
         <MudButton Variant="Variant.Filled" Color="Color.Primary" @onclick="BeginSignOut">Log out</MudButton>  
     </Authorized>
-    <NotAuthorized>    
-        <MudLink Color=Color.Inherit Underline="Underline.None" Href=" authentication/register">Register</MudLink>
-        <MudLink Color=Color.Inherit Underline="Underline.None" Href=" authentication/login">Log in</MudLink>
-    </NotAuthorized>
 </AuthorizeView>
 
 @code{
