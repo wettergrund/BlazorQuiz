@@ -7,13 +7,11 @@
 @inject HttpClient _httpClient
 @inject ILocalStorageService _localStorage 
 
-@* TODO
-CreateQuiz dosent seam to create questions in DB *@
 
 @if (quizData2.questions != null)
 {
     <div class="ma-5 d-flex align-center justify-center">
-        <MudGrid Style="visibility:hidden" Class="d-flex align-center justify-center">
+        <MudGrid Class="d-flex align-center justify-center">
             <MudText Typo="Typo.h4">@quizData2.title</MudText>
             <MudItem xs="12" Class="d-flex align-center justify-center">
                 <MudGrid>
@@ -30,16 +28,16 @@ CreateQuiz dosent seam to create questions in DB *@
             <MudItem xs="12" Class="d-flex align-center justify-center" Style="max-width: 80vw">
                 <MudGrid>
                     <MudItem xs="6" Class="d-flex align-center justify-center">
-                        <MudButton OnClick="SubmitAnswer1" Variant="Variant.Filled" Color="@alt1" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer1</MudButton>
+                        <MudButton OnClick="() => SubmitAnswer(quizData2.questions[count].Answer1, 1)" Variant="Variant.Filled" Color="@alt1" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer1</MudButton>
                     </MudItem>
                     <MudItem xs="6" Class="d-flex align-center justify-center">
-                        <MudButton OnClick="SubmitAnswer2" Variant="Variant.Filled" Color="@alt2" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer2</MudButton>
+                        <MudButton OnClick="() => SubmitAnswer(quizData2.questions[count].Answer2, 2)" Variant="Variant.Filled" Color="@alt2" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer2</MudButton>
                     </MudItem>
                     <MudItem xs="6" Class="d-flex align-center justify-center">
-                        <MudButton OnClick="SubmitAnswer3" Variant="Variant.Filled" Color="@alt3" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer3</MudButton>
+                        <MudButton OnClick="() => SubmitAnswer(quizData2.questions[count].Answer3, 3)" Variant="Variant.Filled" Color="@alt3" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer3</MudButton>
                     </MudItem>
                     <MudItem xs="6" Class="d-flex align-center justify-center">
-                        <MudButton OnClick="SubmitAnswer4" Variant="Variant.Filled" Color="@alt4" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer4</MudButton>
+                        <MudButton OnClick="() => SubmitAnswer(quizData2.questions[count].Answer4, 4)" Variant="Variant.Filled" Color="@alt4" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer4</MudButton>
                     </MudItem>
                 </MudGrid>
             </MudItem>
@@ -69,15 +67,14 @@ else
     bool isCorrect;
     int count = 0;
     int score;
-
-    MudBlazor.Color correct = Color.Success;
+    MudBlazor.Color success = Color.Success;
     MudBlazor.Color wrong = Color.Error;
     MudBlazor.Color primary = Color.Primary;
 
-    MudBlazor.Color alt1 = Color.Primary;
-    MudBlazor.Color alt2 = Color.Primary;
-    MudBlazor.Color alt3 = Color.Primary;
-    MudBlazor.Color alt4 = Color.Primary;
+    MudBlazor.Color alt1 { get; set; } = Color.Primary;
+    MudBlazor.Color alt2 { get; set; } = Color.Primary;
+    MudBlazor.Color alt3 { get; set; } = Color.Primary;
+    MudBlazor.Color alt4 { get; set; } = Color.Primary;
 
     //List<GameQuizViewModel>? quizData = new List<GameQuizViewModel>();
     GuessCheckViewModel guess = new GuessCheckViewModel();
@@ -93,20 +90,26 @@ else
         Console.WriteLine($"Count: {count}, Questions Count: {quizData2.questions.Count}, quiz title: {quizData2.title}");
     }
 
-    private async Task SubmitAnswer1()
+    private async Task SubmitAnswer(string answer, int alternativ)
     {
         //Sets guess and call DB to check answer
-        guess.Guess = quizData2.questions[count].Answer1;
+        guess.Guess = answer;
         guess.GuessId = quizData2.questions[count].Id;
         await GuessCheck(guess);
         // Green if correct, red if wrong
-        if (isCorrect == true)     
-            alt1 = correct;  
+        if (isCorrect == true){
+            await CorrectColor(alternativ);
+            StateHasChanged();
+        }
         else
-            alt1 = wrong;
+        {
+            await WrongColor(alternativ);          
+            StateHasChanged();
+        }
         //Delay to veiw result then reset colour
         await Task.Delay(3000);
-        alt1 = primary;
+        await ResetColor(alternativ);       
+        StateHasChanged();
         //Check if there are more questions left. If not submit score to DB.
         if (count < quizData2.questions.Count-1)
             count++;
@@ -115,70 +118,70 @@ else
         //Send to gamefinished screen to show score
     }
 
-    private async Task SubmitAnswer2()
+    private async Task CorrectColor(int alternativ)
     {
-        //Sets guess and call DB to check answer
-        guess.Guess = quizData2.questions[count].Answer2;
-        guess.GuessId = quizData2.questions[count].Id;
-        await GuessCheck(guess);
-        // Green if correct, red if wrong
-        if (isCorrect == true)
-            alt2 = correct;
-        else
-            alt2 = wrong;
-        //Delay to veiw result then reset colour
-        await Task.Delay(3000);
-        alt2 = primary;
-        //Check if there are more questions left. If not submit score to DB.
-        if (count < quizData2.questions.Count-1)
-            count++;
-        else
-        await SubmitQuiz();
-        //Send to gamefinished screen to show score
+        await Task.Run(() =>
+        {
+            switch (alternativ)
+            {
+                case 1:
+                    alt1 = success;
+                    break;
+                case 2:
+                    alt2 = success;
+                    break;
+                case 3:
+                    alt3 = success;
+                    break;
+                case 4:
+                    alt4 = success;
+                    break;
+            }
+        });
     }
 
-    private async Task SubmitAnswer3()
+    private async Task WrongColor(int alternativ)
     {
-        //Sets guess and call DB to check answer
-        guess.Guess = quizData2.questions[count].Answer3;
-        guess.GuessId = quizData2.questions[count].Id;
-        await GuessCheck(guess);
-        // Green if correct, red if wrong
-        if (isCorrect == true)
-            alt3 = correct;
-        else
-            alt3 = wrong;
-        //Delay to veiw result then reset colour
-        await Task.Delay(3000);
-        alt3 = primary;
-        //Check if there are more questions left. If not submit score to DB.
-        if (count < quizData2.questions.Count-1)
-            count++;
-        else
-            await SubmitQuiz();
-        //Send to gamefinished screen to show score
+        await Task.Run(() =>
+        {
+            switch (alternativ)
+            {
+                case 1:
+                    alt1 = wrong;
+                    break;
+                case 2:
+                    alt2 = wrong;
+                    break;
+                case 3:
+                    alt3 = wrong;
+                    break;
+                case 4:
+                    alt4 = wrong;
+                    break;
+            }
+        });
     }
 
-    private async Task SubmitAnswer4()
+    private async Task ResetColor(int alternativ)
     {
-        //Sets guess and call DB to check answer
-        guess.Guess = quizData2.questions[count].Answer4;
-        guess.GuessId = quizData2.questions[count].Id;
-        await GuessCheck(guess);
-        // Green if correct, red if wrong
-        if (isCorrect == true)
-            alt4 = correct;
-        else
-            alt4 = wrong;
-        //Delay to veiw result then reset colour
-        await Task.Delay(3000);
-        alt4 = primary;
-        //Check if there are more questions left. If not submit score to DB.
-        if (count < quizData2.questions.Count-1)
-            count++;
-        else
-            await SubmitQuiz();
-        //Send to gamefinished screen to show score
+        await Task.Run(() =>
+        {
+            switch (alternativ)
+            {
+                case 1:
+                    alt1 = primary;
+                    break;
+                case 2:
+                    alt2 = primary;
+                    break;
+                case 3:
+                    alt3 = primary;
+                    break;
+                case 4:
+                    alt4 = primary;
+                    break;
+            }
+        });
     }
 
     private async Task GuessCheck(GuessCheckViewModel guess)
