@@ -21,8 +21,4 @@
     <ProjectReference Include="..\Shared\BlazorQuiz.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Pages\NewQuizComponents\" />
-  </ItemGroup>
-
 </Project>

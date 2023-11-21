@@ -5,15 +5,30 @@
 @using System.Net.Http.Headers;
 @using BlazorQuiz.Shared.ViewModels
 @using Models;
+@using BlazorQuiz.Client.Pages.NewQuizComponents;
+@inject NavigationManager _nav
 
 @inject HttpClient _http
 
 
 <div class="ma-5 d-flex align-center justify-center">
-    @* <MudImage Src="/images/317f578a-0daa-402d-b665-79625b337669.png" Width="200" Height="150" Alt="Swedish Farm House" Elevation="25" Class="rounded-lg ma-4" /> *@
-    @* <button @onclick=CreateGame>Create Game</button> *@
+    
     <MudGrid Class="d-flex align-center justify-center">
         <MudText Typo="Typo.h4">New Quiz</MudText>
+        @if (!String.IsNullOrEmpty(options.QuizGuid)){
+            <MudItem xs="12" Class="d-flex align-center justify-center">
+                <MudPaper Width="500px" Class="d-block pa-12">
+                    <MudText Typo="Typo.h5">Quiz successfully created!</MudText>
+                    <MudTextField @ref="singleLineReference" T="string" Label="Quiz URL" Variant="Variant.Outlined" Text="@url" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Api" OnAdornmentClick="@(() => singleLineReference.SelectAsync())" />
+                </MudPaper>
+            </MudItem>
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ResetGame">Create another quiz</MudButton>
+
+        }
+        else
+        {
+            
+        
         <MudItem xs="12" Class="d-flex align-center justify-center">
             <MudPaper Width="500px" Class="d-block pa-12">
                 <MudText Typo="Typo.h5">Settings</MudText>
@@ -38,53 +53,26 @@
                     @foreach (var item in quizList)
                     {
                         <MudExpansionPanel @key="item.Question" Text="@item.Question" MaxHeight="150">
+                            Correct answer: <b>
                             @item.CorrectAnswer
+
+                            </b>
                         </MudExpansionPanel>
+                         
+             
                     }
 
                 </MudExpansionPanels>
                 <MudText Typo="Typo.h5">Add a question</MudText>
    
-                <MudForm Model="quiz" @ref="form" @bind-IsValid="@options.IsValidated">
-                    <MudTextField T="string" Label="Question" @bind-Value="quiz.Question" For="@(() => quiz.Question)" Required="true" RequiredError="Add a quetsion!" />
-                    <MudTextField Variant="Variant.Outlined" T="string" Label="Correct answer" @bind-Value="quiz.Answer1" For="@(() => quiz.Answer1)" Required="true" RequiredError="Required" />
-                    <MudTextField T="string" Label="Incorrect answer 1" @bind-Value="quiz.Answer2" For="@(() => quiz.Answer2)" Required="true" RequiredError="Required" />
-                    <MudTextField T="string" Label="Incorrect answer 2" @bind-Value="quiz.Answer3" For="@(() => quiz.Answer3)" Required="true" RequiredError="Required" />
-                    <MudTextField Immediate="true" T="string" Label="Incorrect answer 3" @bind-Value="quiz.Answer4" For="@(() => quiz.Answer4)" Required="true" RequiredError="Required" OnChange="@(()=>form.Validate())" />
-                    <MudExpansionPanels Class="mt-3">
-                        <MudExpansionPanel>
-                            <TitleContent>
-                                <div class="d-flex">
-                                    <MudIcon Icon="@Icons.Material.Filled.Settings" class="mr-3"></MudIcon>
-                                    <MudText>Question options</MudText>
-                                </div>
-                            </TitleContent>
-                            <ChildContent>
-                                <MudToggleIconButton @bind-Toggled="@options.MediaQuestion"
-                                                     Icon="@Icons.Material.Filled.ImageNotSupported" Color="@Color.Error" Title="Off"
-                                                     ToggledIcon="@Icons.Material.Filled.Image" ToggledColor="@Color.Success" ToggledTitle="On" />
-
-                                <span>@(options.MediaQuestion ? "This is a media question" : "This is a text question")</span>
-
-
-                                <_Upload OnFileUpload="OnFileUploaded" IsActive="@options.MediaQuestion" />
-                            </ChildContent>
-          
-                        </MudExpansionPanel>
-                    </MudExpansionPanels>
-                    <MudTooltip Text="Add">
-
-                        <MudFab Disabled="@(!(options.IsValidated && (!options.MediaQuestion || (options.MediaQuestion && !string.IsNullOrEmpty(quiz.QuizImageUrl)))))" Color="Color.Primary" StartIcon="@Icons.Material.Filled.Add" OnClick="AddQuestion" />
-                    </MudTooltip>
-
-                </MudForm>
+                  <QuizForm options="@options" quiz="@quiz" OnAddQuestion="HandleAddQuestion" />
+    
             </MudPaper>
         </MudItem>
-        @quiz.QuizImageUrl
-        @* @quiz.QuizImageUrl.Length *@
+       
         <MudButton Disabled="@(!options.HasQuestion)" Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateQuiz">Create Quiz</MudButton>
+        }
     </MudGrid>
-
 </div>
 
 
@@ -92,18 +80,33 @@
     private MudTheme Theme = new MudTheme();
     private NewQuestionViewModel quiz = new NewQuestionViewModel();
     private List<NewQuestionViewModel> quizList = new List<NewQuestionViewModel>();
+    private MudTextField<string> singleLineReference;
+
     MudForm? form;
-   
+
+    private async Task HandleAddQuestion(NewQuestionViewModel newQuestion)
+    {
+        var newQ = new NewQuestionViewModel()
+            {
+                Question = newQuestion.Question,
+                Answer1 = newQuestion.Answer1,
+                Answer2 = newQuestion.Answer2,
+                Answer3 = newQuestion.Answer3,
+                Answer4 = newQuestion.Answer4,
+                QuizImageUrl = newQuestion.QuizImageUrl,
+                CorrectAnswer = newQuestion.Answer1
+
+            };
+        quizList.Add(newQ);
+        options.HasQuestion = true;
+        StateHasChanged();
+    }
+
 
     QuizOptions options = new QuizOptions(); //Set of settings to make the quiz work
+    string url;
 
-    //TEST!!
 
-    // private async Task CreateGame()
-    // {
-    //     var content = new StringContent("", Encoding.UTF8, "application/json");
-    //     var response = await _http.PostAsync($"api/game/newgame/92bd5fac-7a2d-406e-8363-163789407370", content);
-    // }
 
     protected override async Task OnInitializedAsync()
     {
@@ -137,7 +140,14 @@
             newQuiz.Timer = 0;
         }
 
+
+
         var response = await _http.PostAsJsonAsync($"api/game/create", newQuiz);
+
+        var model = await response.Content.ReadFromJsonAsync<NewQuizViewModel>();
+        options.QuizGuid = model.PublicId;
+        url = $"{_nav.BaseUri}{model.PublicId}";
+
     }
 
     private async Task AddQuestion()
@@ -158,6 +168,13 @@
 
         options.ResetToDefault();
         quiz.ResetToDefault();
+
+    }
+
+    private async Task ResetGame()
+    {
+        options.NewGame();
+        quizList = new List<NewQuestionViewModel>();
 
     }
 

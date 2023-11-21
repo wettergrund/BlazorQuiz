@@ -34,7 +34,13 @@ namespace BlazorQuiz.Server.Controllers
             //Created a new quiz
             var newQuiz = await _gameService.CreateQuizAsync(quiz.Title, quiz.Questions, quiz.Timer, UserId);
 
-            return Ok(newQuiz);
+            var quizViewModel = new NewQuizViewModel()
+            {
+                PublicId = newQuiz.PublicId,
+                Title = newQuiz.Name
+            };
+
+            return Ok(quizViewModel);
         }
 
         [HttpPost("newgame/{quizId}")]
