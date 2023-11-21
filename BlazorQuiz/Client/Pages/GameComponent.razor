@@ -8,7 +8,13 @@
 @inject ILocalStorageService _localStorage 
 
 
-@if (quizData2.questions != null)
+@if (gameFinnished == true)
+{
+    <div class="ma-5 d-flex align-center justify-center">
+        <p style="padding-top:200px">Final score: @score</p>
+    </div>
+}
+else if (quizData2.questions != null)
 {
     <div class="ma-5 d-flex align-center justify-center">
         <MudGrid Class="d-flex align-center justify-center">
@@ -194,6 +200,7 @@ else
     private async Task SubmitQuiz()
     {
         var response = await _httpClient.PutAsJsonAsync($"api/game/gameresult", new { gameId = quizData2.gameId, guesses = guesses });
+        gameFinnished = true;
         // Add code to get data to present in score screen
     }
 }
