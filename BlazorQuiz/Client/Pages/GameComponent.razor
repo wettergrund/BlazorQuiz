@@ -24,17 +24,11 @@ else if (quizData2.questions != null)
                 <MudGrid>
                     <MudItem xs="12" Class="d-flex align-center justify-center">
                         <MudCard Style="width: 80vw; max-width: 600px; overflow: hidden; ">
-                            @* <MudCardMedia Image="@quizData2.questions[count].QuizMediaUrl" Height="300" /> *@
-                            @* <MudImage Src="@quizData2.questions[count].QuizMediaUrl" Width="200" Height="150" Alt="Swedish Farm House" Elevation="25" Class="rounded-lg ma-4" /> *@
 
                             @if(@media[count].Path.Contains("image")){
                                 <MudCardMedia Image="@media[count].Path" Height="300" />
-                                @* <MudImage Src="@media[count].Path" Width="200" Height="150" Alt="Swedish Farm House" Elevation="25" Class="rounded-lg ma-4" /> *@
                             }else if(@media[count].Path.Contains("video")){
-                               
-                                    
-                                    <_PlayVideo VideoPath="@media[count].Path" VideoType="@media[count].Type" ShowVideo=true/>
-                                
+                              <_PlayVideo VideoPath="@media[count].Path" VideoType="@media[count].Type" ShowVideo=true/>
                             }
 
 

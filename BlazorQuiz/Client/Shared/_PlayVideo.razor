@@ -2,7 +2,6 @@
     @if (!ShowVideo)
 {
         <MudCardContent Style="width:100%; height: 100%;display: flex;flex-wrap: wrap;justify-content: center;align-items: center;">
-            @* <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="250px" /> *@
             <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="(() => ShowVideo = true)">Play Video</MudButton>
         </MudCardContent>
     }
@@ -26,9 +25,3 @@
 }
 
 
-@*
-Use:
-
-<_PlayVideo ShowVideo="@showVideo" VideoPath="moviepath.mp4" VideoType="video/mp4"  />
-
-*@
