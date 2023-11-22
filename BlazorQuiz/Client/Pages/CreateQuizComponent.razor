@@ -140,7 +140,7 @@
 
         var model = await response.Content.ReadFromJsonAsync<NewQuizViewModel>();
         options.QuizGuid = model.PublicId;
-        url = $"{_nav.BaseUri}{model.PublicId}";
+        url = $"{_nav.BaseUri}game/{model.PublicId}";
 
     }
 

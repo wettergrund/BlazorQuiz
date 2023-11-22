@@ -82,14 +82,19 @@ namespace BlazorQuiz.Server.Services
             Directory.CreateDirectory(fileName);
 
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), destDir, fileName);
-
             // Save the file
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await file.CopyToAsync(stream);
             }
 
-            return filePath;
+            destDir = destDir.Replace("wwwroot/", "");
+            var returnPath = Path.Combine(destDir, fileName);
+
+            returnPath = returnPath.Replace("\\", "/");
+
+
+            return returnPath;
         }
     }
 }

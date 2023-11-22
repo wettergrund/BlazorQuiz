@@ -8,11 +8,6 @@
 @inject ILocalStorageService _localStorage 
 
 
-@currentTimer;
-@count;
-
-Game finished: @gameFinnished
-
 @if (gameFinnished == true)
 {
     <div class="ma-5 d-flex align-center justify-center">
@@ -22,14 +17,27 @@ Game finished: @gameFinnished
 else if (quizData2.questions != null)
 {
     <div class="ma-5 d-flex align-center justify-center">
-        <MudGrid Class="d-flex align-center justify-center">
+        <MudGrid Class="d-flex align-center justify-center" Style="max-width: 600px">
             <MudText Typo="Typo.h4">@quizData2.title</MudText>
           
             <MudItem xs="12" Class="d-flex align-center justify-center">
                 <MudGrid>
                     <MudItem xs="12" Class="d-flex align-center justify-center">
-                        <MudCard Style="width: 80vw; background: gray;">
-                            <MudCardMedia Image="@quizData2.questions[count].QuizMediaUrl" Height="300" />
+                        <MudCard Style="width: 80vw; max-width: 600px; overflow: hidden; ">
+                            @* <MudCardMedia Image="@quizData2.questions[count].QuizMediaUrl" Height="300" /> *@
+                            @* <MudImage Src="@quizData2.questions[count].QuizMediaUrl" Width="200" Height="150" Alt="Swedish Farm House" Elevation="25" Class="rounded-lg ma-4" /> *@
+
+                            @if(@media[count].Path.Contains("image")){
+                                <MudCardMedia Image="@media[count].Path" Height="300" />
+                                @* <MudImage Src="@media[count].Path" Width="200" Height="150" Alt="Swedish Farm House" Elevation="25" Class="rounded-lg ma-4" /> *@
+                            }else if(@media[count].Path.Contains("video")){
+                               
+                                    
+                                    <_PlayVideo VideoPath="@media[count].Path" VideoType="@media[count].Type" ShowVideo=true/>
+                                
+                            }
+
+
                             <MudCardContent>
                                 <MudText Class="d-flex align-center justify-center" Typo="Typo.h5">@quizData2.questions[count].Question</MudText>
                             </MudCardContent>
@@ -77,6 +85,8 @@ else
     public string id { get; set; }
 
     GameQuizViewModel quizData2 = new GameQuizViewModel();
+    List<MediaViewModel> media = new List<MediaViewModel>();
+
 
     bool gameFinnished = false;
     bool isCorrect;
@@ -105,6 +115,29 @@ else
         // var response = await _httpClient.GetAsync($"api/game/{id}");
         var response = await _httpClient.PostAsJsonAsync($"api/game/newgame/{id}", id);
         quizData2 = await response.Content.ReadFromJsonAsync<GameQuizViewModel>();
+
+        var questions = quizData2.questions;
+
+        foreach (var question in questions)
+        {
+            var newMedia = question.QuizMediaUrl;
+
+            var mediaRes = await _httpClient.GetAsync($"api/media/{newMedia}");
+            var mediaObj = await mediaRes.Content.ReadFromJsonAsync<MediaViewModel>();
+            var mediaClone = new MediaViewModel()
+                {
+                    Type = mediaObj.Type,
+                    Path = mediaObj.Path
+                };
+            media.Add(mediaClone);
+      
+
+
+            
+
+
+        }
+
         StartCountdown();
 
     }
