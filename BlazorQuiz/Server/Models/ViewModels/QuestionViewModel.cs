@@ -33,9 +33,9 @@ namespace BlazorQuiz.Server.ViewModels
             Answer3 = answers[2];
             Answer4 = answers[3];
 
-            var mediaUrl = context.MediaModels.Where(m => m.Id == questions.MediaRefId).Select(m => m.Path).FirstOrDefault();
+            var mediaUrl = context.MediaModels.Where(m => m.Id == questions.MediaRefId).Select(m => m.Guid).FirstOrDefault();
 
-            QuizMediaUrl = mediaUrl;
+            QuizMediaUrl = mediaUrl.ToString();
             Id = questions.Id;
 
         }

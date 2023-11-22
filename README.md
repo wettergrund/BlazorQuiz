@@ -51,9 +51,3 @@ Controller -> IGameService -> GameService.
     <td align="center"><a href="https://github.com/wettergrund"><img src="https://avatars.githubusercontent.com/u/50584818?v=4" width="100px;" alt="Jonas Wettergrund"/><br /><sub><b>Jonas Wettergrund</b></sub></a><br />
   </tr>
 </table>
-
-
-
-
-
-

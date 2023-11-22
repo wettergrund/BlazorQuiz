@@ -1,21 +1,21 @@
-﻿    <MudCard Style="width:640px; height: 360px">
-@if (!ShowVideo)
+﻿<MudCard Style="width:100%; height: 320px; overflow: hidden">
+    @if (!ShowVideo)
 {
-        <MudCardContent Width="650" Height="370">
-            <MudSkeleton SkeletonType="SkeletonType.Rectangle" Width="100%" Height="300px" />
-            <MudSkeleton SkeletonType="SkeletonType.Text" Class="mt-1" Width="100%" Height="30px" />
+        <MudCardContent Style="width:100%; height: 100%;display: flex;flex-wrap: wrap;justify-content: center;align-items: center;">
+            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="(() => ShowVideo = true)">Play Video</MudButton>
         </MudCardContent>
-}
+    }
 
-<video autoplay="@(ShowVideo)" width="640" height="360" hidden="@(!ShowVideo)">
+    <video autoplay="@(ShowVideo)" loop="true" style="width: 100%; height: auto;" hidden="@(!ShowVideo)" playsinline="">
         <source src=@VideoPath type=@VideoType>
     Your browser does not support the video tag.
 </video>
+    
     </MudCard>
 
 @code {
     [Parameter]
-    public bool ShowVideo { get; set; } //Trigger to run video
+    public bool ShowVideo { get; set; } = false; //Trigger to run video
 
     [Parameter]
     public string VideoPath { get; set; } = "/videos/e53cd43c-555e-4a3e-a056-6a74d087df26.mp4";
@@ -25,9 +25,3 @@
 }
 
 
-@*
-Use:
-
-<_PlayVideo ShowVideo="@showVideo" VideoPath="moviepath.mp4" VideoType="video/mp4"  />
-
-*@

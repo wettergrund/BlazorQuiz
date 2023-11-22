@@ -1,6 +1,8 @@
 ﻿using BlazorQuiz.Server.Data;
 using BlazorQuiz.Server.Models;
 using BlazorQuiz.Server.Services;
+using BlazorQuiz.Shared.ViewModels;
+
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlazorQuiz.Server.Controllers
@@ -22,7 +24,13 @@ namespace BlazorQuiz.Server.Controllers
 
             var media = await _mediaService.GetMediaByIdAsync(guid);
 
-            return Ok(media);
+            MediaViewModel returnMedia = new()
+            {
+                Type = media.Type,
+                Path = media.Path
+            };
+
+            return Ok(returnMedia);
         }
 
         [HttpPost]
