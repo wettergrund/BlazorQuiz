@@ -12,14 +12,14 @@
                 <MudList Clickable="true">
                     @foreach (var item in userList)
                     {
-                        <MudDivider />
-                        <MudListItem>
-                            User: @item.User
-                        </MudListItem>
-                        <MudListItem>
-                            Score: @item.Score
-                        </MudListItem>
-                        <MudDivider />
+                        <MudItem Style="border: solid 1px black">
+                            <MudListItem>
+                                User: @item.User
+                            </MudListItem>
+                            <MudListItem>
+                                Score: @item.Score
+                            </MudListItem>
+                        </MudItem>
                     }
                 </MudList>
             </MudPaper>
@@ -28,10 +28,10 @@
 </div>
 
 @code {
-    List<UserQuizViewModel>? userList = new List<UserQuizViewModel>();
-
     [Parameter]
     public string publicid { get; set; }
+    
+    List<UserQuizViewModel>? userList = new List<UserQuizViewModel>();
 
     protected override async Task OnInitializedAsync()
     {

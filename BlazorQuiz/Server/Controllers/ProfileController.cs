@@ -19,32 +19,31 @@ namespace BlazorQuiz.Server.Controllers
         [HttpGet("mygames")]
         public async Task<IActionResult> GetUserGames()
         {
-            // Return games related to userId (Use identity to fetch ID)
-
             var userGames = await _profileService.GetUserGamesAsync(UserId);
 
+            // Return games related to userId (Use identity to fetch ID)
             return Ok(userGames);
         }
+
+        // Return quizes created by user (Use identity to fetch ID)
+        //Get user ID from header
         [HttpGet("myquizzes")]
         public async Task<IActionResult> GetCreatedGames()
         {
-            // Return quizes created by user (Use identity to fetch ID)
-            //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value; //Get user ID from header
-
             var userQuizzes = await _profileService.GetUserCreatedGamesAsync(UserId);
 
             // Returns UserCreatedQuizViewModel List
             return Ok(userQuizzes);
         }
+
+        // Send data to client on all users who played this specific Quiz
+        // Who played and what Score they got.
         [HttpGet("myquizzes/{publicid}")]
         public async Task<IActionResult> GetDataOnSpecificGame(string publicId)
         {
-            // Send data to client on all users who played this specific Quiz
-            // Who played and what Score they got.
-
             var quizUserData = await _profileService.GetDataOnGameAsync(publicId, UserName);
 
-            // Returns UserQuizViewModel List with score and user
+            // Returns UserQuizViewModel List with score and username
             return Ok(quizUserData);
         }
     }
