@@ -16,13 +16,8 @@
     <MudGrid Class="d-flex align-center justify-center">
         <MudText Typo="Typo.h4">New Quiz</MudText>
         @if (!String.IsNullOrEmpty(options.QuizGuid)){
-            <MudItem xs="12" Class="d-flex align-center justify-center">
-                <MudPaper Width="500px" Class="d-block pa-12">
-                    <MudText Typo="Typo.h5">Quiz successfully created!</MudText>
-                    <MudTextField @ref="singleLineReference" T="string" Label="Quiz URL" Variant="Variant.Outlined" Text="@url" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Api" OnAdornmentClick="@(() => singleLineReference.SelectAsync())" />
-                </MudPaper>
-            </MudItem>
-            <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ResetGame">Create another quiz</MudButton>
+
+        <ShareGame OnReset="ResetGame" Url="@url" />
 
         }
         else
@@ -80,7 +75,6 @@
     private MudTheme Theme = new MudTheme();
     private NewQuestionViewModel quiz = new NewQuestionViewModel();
     private List<NewQuestionViewModel> quizList = new List<NewQuestionViewModel>();
-    private MudTextField<string> singleLineReference;
 
     MudForm? form;
 
