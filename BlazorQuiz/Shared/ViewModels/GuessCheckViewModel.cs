@@ -10,5 +10,7 @@ namespace BlazorQuiz.Shared.ViewModels
     {
         public int GuessId { get; set; }
         public string Guess { get; set;}
+        public int Seconds { get; set;}
+
     }
 }
