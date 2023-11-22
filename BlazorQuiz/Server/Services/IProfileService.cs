@@ -7,7 +7,7 @@ namespace BlazorQuiz.Server.Services
     {
         Task<List<UserCreatedQuizViewModel>> GetUserGamesAsync(string userId);
         Task<List<QuizModel>> GetUserCreatedGamesAsync(string userId);
-        Task<List<UserQuizViewModel>> GetDataOnGameAsync(string publicId);
+        Task<List<UserQuizViewModel>> GetDataOnGameAsync(string publicId, string username);
 
     }
 }

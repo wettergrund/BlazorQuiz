@@ -40,17 +40,18 @@ namespace BlazorQuiz.Server.Services
             return viewModels;
         }
 
-        public async Task<List<UserQuizViewModel>> GetDataOnGameAsync(string publicId)
+        public async Task<List<UserQuizViewModel>> GetDataOnGameAsync(string publicId, string username)
         {
             var dataGames = _context.UserQuizModels.Where(q => q.QuizRefPublicId == publicId).ToList();
-
             var viewModels = new List<UserQuizViewModel>();
 
             foreach (var dataGame in dataGames)
             {
                 var viewModel = new UserQuizViewModel();
                 viewModel.Score = dataGame.Score;
-                viewModel.User = dataGame.UserRefId;
+                viewModel.User = _context.Users
+                    .Where(x => x.Id == dataGame.UserRefId)
+                    .Select(x => x.UserName).FirstOrDefault();
                 viewModels.Add(viewModel);
             }
 

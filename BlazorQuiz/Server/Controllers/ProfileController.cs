@@ -42,7 +42,7 @@ namespace BlazorQuiz.Server.Controllers
             // Send data to client on all users who played this specific Quiz
             // Who played and what Score they got.
 
-            var quizUserData = await _profileService.GetDataOnGameAsync(publicId);
+            var quizUserData = await _profileService.GetDataOnGameAsync(publicId, UserName);
 
             // Returns UserQuizViewModel List with score and user
             return Ok(quizUserData);

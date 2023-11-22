@@ -8,5 +8,6 @@ namespace BlazorQuiz.Server.Controllers
     public class BaseController : ControllerBase
     {
         protected string UserId { get => User.FindFirst(ClaimTypes.NameIdentifier)?.Value; }
+        protected string UserName { get => User.FindFirst(ClaimTypes.Name)?.Value; }
     }
 }
