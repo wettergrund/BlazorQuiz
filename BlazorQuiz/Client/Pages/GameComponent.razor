@@ -111,18 +111,29 @@ else
         quizData2 = await response.Content.ReadFromJsonAsync<GameQuizViewModel>();
 
         var questions = quizData2.questions;
-
+        var mediaClone = new MediaViewModel();
         foreach (var question in questions)
         {
             var newMedia = question.QuizMediaUrl;
-
+            if (newMedia == "00000000-0000-0000-0000-000000000000")
+            {
+                mediaClone = new MediaViewModel()
+                    {
+                        Type = "",
+                        Path = ""
+                    };
+            }
+            else
+            {
             var mediaRes = await _httpClient.GetAsync($"api/media/{newMedia}");
             var mediaObj = await mediaRes.Content.ReadFromJsonAsync<MediaViewModel>();
-            var mediaClone = new MediaViewModel()
+            mediaClone = new MediaViewModel()
                 {
                     Type = mediaObj.Type,
                     Path = mediaObj.Path
                 };
+                
+            }
             media.Add(mediaClone);
       
 

@@ -91,8 +91,10 @@
                 CorrectAnswer = newQuestion.Answer1
 
             };
+
         quizList.Add(newQ);
         options.HasQuestion = true;
+        options.ResetToDefault();
         StateHasChanged();
     }
 
