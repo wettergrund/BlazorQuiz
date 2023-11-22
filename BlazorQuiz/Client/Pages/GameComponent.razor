@@ -8,6 +8,11 @@
 @inject ILocalStorageService _localStorage 
 
 
+@currentTimer;
+@count;
+
+Game finished: @gameFinnished
+
 @if (gameFinnished == true)
 {
     <div class="ma-5 d-flex align-center justify-center">
@@ -19,6 +24,7 @@ else if (quizData2.questions != null)
     <div class="ma-5 d-flex align-center justify-center">
         <MudGrid Class="d-flex align-center justify-center">
             <MudText Typo="Typo.h4">@quizData2.title</MudText>
+          
             <MudItem xs="12" Class="d-flex align-center justify-center">
                 <MudGrid>
                     <MudItem xs="12" Class="d-flex align-center justify-center">
@@ -31,6 +37,11 @@ else if (quizData2.questions != null)
                     </MudItem>
                 </MudGrid>
             </MudItem>
+            @if (hasTimer)
+            {
+
+                <MudProgressLinear Color="@(currentTimer < timerStart / 2 ? Color.Secondary : Color.Primary )" Striped="true" Size="Size.Large" Value="@currentTimer" Min="0" Max="@timerStart" Class="my-7" />
+            }
             <MudItem xs="12" Class="d-flex align-center justify-center" Style="max-width: 80vw">
                 <MudGrid>
                     <MudItem xs="6" Class="d-flex align-center justify-center">
@@ -61,6 +72,7 @@ else
 
 
 @code {
+
     [Parameter]
     public string id { get; set; }
 
@@ -70,6 +82,10 @@ else
     bool isCorrect;
     int count = 0;
     int score;
+    bool hasTimer = false;
+    int timerStart;
+    int currentTimer;
+    bool stoppTimer = false;
 
     MudBlazor.Color success = Color.Success;
     MudBlazor.Color wrong = Color.Error;
@@ -89,37 +105,131 @@ else
         // var response = await _httpClient.GetAsync($"api/game/{id}");
         var response = await _httpClient.PostAsJsonAsync($"api/game/newgame/{id}", id);
         quizData2 = await response.Content.ReadFromJsonAsync<GameQuizViewModel>();
+        StartCountdown();
+
     }
 
-    private async Task SubmitAnswer(string answer, int alternativ)
+
+
+    private async Task StartCountdown()
+    {
+        if (quizData2.timer > 0)
+        {
+            hasTimer = true;
+            timerStart = quizData2.timer * 10;
+            currentTimer = quizData2.timer * 10;
+
+
+            do
+            {
+                await Task.Delay(100);
+
+
+
+                currentTimer -= 1;
+                StateHasChanged();
+            }
+            while (currentTimer > 0 && !stoppTimer);
+
+            if (currentTimer == 0)
+            {
+
+                await SubmitAnswer();
+            }
+
+
+
+        }
+
+    }
+
+    private async Task SubmitAnswer(string answer = "", int alternativ = -1)
     {
         //Sets guess and call DB to check answer
+        stoppTimer = true;
         guess.Guess = answer;
         guess.GuessId = quizData2.questions[count].Id;
+
+
+        if (hasTimer)
+        {
+            guess.Seconds = CalculatedTimeElapsed();
+        }
+
         await GuessCheck(guess);
         // Green if correct, red if wrong
-        if (isCorrect == true){
-            await CorrectColor(alternativ);
-            StateHasChanged();
+
+
+        if(alternativ == -1)
+        {
+
+            await TimeOut();
         }
         else
         {
-            await WrongColor(alternativ);          
+        
+            if (isCorrect == true){
+                await CorrectColor(alternativ);
+                StateHasChanged();
+            }
+            else
+            {
+                await WrongColor(alternativ);          
+                StateHasChanged();
+            }
+
+            await Task.Delay(3000);
+            await ResetColor(alternativ);
             StateHasChanged();
         }
         //Delay to veiw result then reset colour
-        await Task.Delay(3000);
-        await ResetColor(alternativ);       
-        StateHasChanged();
+        
+
         //Check if there are more questions left. If not submit score to DB.
         if (count < quizData2.questions.Count-1)
         {
             count++;
+            ResetTimer();
+
             StateHasChanged();
         }
         else
             await SubmitQuiz();
         //Send to gamefinished screen to show score
+    }
+
+    private async Task TimeOut()
+    {
+        for(int i = 1; i <=4; i++)
+        {
+            await WrongColor(i);
+            StateHasChanged();
+
+        }
+        await Task.Delay(3000);
+        for (int i = 1; i <= 4; i++)
+        {
+            await ResetColor(i);
+            StateHasChanged();
+
+        }
+    }
+
+
+    private int CalculatedTimeElapsed()
+    {
+        int timeLeft = (int)Math.Ceiling(currentTimer / 10m);
+
+        int timeElapsed = (timerStart / 10) - timeLeft;
+
+        return timeElapsed; //Time elapsed in sec
+    }
+
+    private void ResetTimer()
+    {
+        stoppTimer = false;
+        currentTimer = timerStart;
+        StartCountdown();
     }
 
     private async Task CorrectColor(int alternativ)
@@ -192,15 +302,29 @@ else
     {
         var response = await _httpClient.PostAsJsonAsync($"api/game/guess", guess);
         isCorrect = await response.Content.ReadFromJsonAsync<bool>();
-        guesses.Add(guess);
+        var guessClone = new GuessCheckViewModel()
+            {
+                Guess = guess.Guess,
+                GuessId = guess.GuessId,
+                Seconds = guess.Seconds
+            };
+        guesses.Add(guessClone);
     }
 
     private async Task SubmitQuiz()
     {
         Console.WriteLine($"guesses count: {guesses.Count}, guessId: {guesses[0].GuessId}, guessword: {guesses[0].Guess}");
-        var response = await _httpClient.PutAsJsonAsync($"api/game/gameresult", new { gameId = quizData2.gameId, guesses = guesses });
+
+        SubmitQuizViewModel submitQuiz = new()
+            {
+                gameId = quizData2.gameId,
+                guesses = this.guesses
+            };
+
+        var response = await _httpClient.PutAsJsonAsync($"api/game/gameresult", submitQuiz);
         score = await response.Content.ReadFromJsonAsync<int>();
         gameFinnished = true;
+        StateHasChanged();
         // Add code to get data to present in score screen
     }
 }

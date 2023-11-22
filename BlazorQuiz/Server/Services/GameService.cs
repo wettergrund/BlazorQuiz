@@ -178,7 +178,11 @@ namespace BlazorQuiz.Server.Services
 
                 if(guessStatus == true)
                 {
-                    score++;
+                    score += 1000;
+                    if(guess.Seconds != null)
+                    {
+                        score -= guess.Seconds;
+                    }
                 }
             }
 
@@ -206,7 +210,7 @@ namespace BlazorQuiz.Server.Services
 
         public UserQuizModel FindUserQuiz(int id)
         {
-            UserQuizModel? game = _context.UserQuizModels.Where(g => g.Id == id).Last();
+            UserQuizModel? game = _context.UserQuizModels.Where(g => g.Id == id).FirstOrDefault();
 
             return game;
         }

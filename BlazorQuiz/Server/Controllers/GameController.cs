@@ -63,7 +63,7 @@ namespace BlazorQuiz.Server.Controllers
         }
 
         [HttpPut("gameresult")]
-        public async Task<IActionResult> UpdateGame (int gameId, List<GuessCheckViewModel> guesses)
+        public async Task<IActionResult> UpdateGame ([FromBody] SubmitQuizViewModel quiz)
         {
 
 
@@ -75,10 +75,10 @@ namespace BlazorQuiz.Server.Controllers
 
 
             //Find UserQuiz and questions related to Quiz Id
-            var userGame = _gameService.FindUserQuiz(gameId);
+            var userGame = _gameService.FindUserQuiz(quiz.gameId);
             var questions = _gameService.FindQuestionsByQuizRef(userGame.QuizRefPublicId);
 
-            int userGuesses = guesses.Count();
+            int userGuesses = quiz.guesses.Count();
             int quizGuesses = questions.Count();
 
 
@@ -91,7 +91,7 @@ namespace BlazorQuiz.Server.Controllers
             else if (userGuesses.Equals(quizGuesses)) {
 
                 //Update score and return game info.
-                var updateScore = await _gameService.FinishedGame(userGame , guesses);
+                var updateScore = await _gameService.FinishedGame(userGame , quiz.guesses);
 
                 return Ok(updateScore.Score);
             

@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace BlazorQuiz.Shared.ViewModels
 {
-    public class GuessCheckViewModel
+    public class SubmitQuizViewModel
     {
-        public int GuessId { get; set; }
-        public string Guess { get; set;}
-        public int Seconds { get; set;}
+    
 
+        public int gameId { get; set; }
+        public List<GuessCheckViewModel> guesses { get; set; }
     }
 }
