@@ -113,7 +113,10 @@ else
         StateHasChanged();
         //Check if there are more questions left. If not submit score to DB.
         if (count < quizData2.questions.Count-1)
+        {
             count++;
+            StateHasChanged();
+        }
         else
             await SubmitQuiz();
         //Send to gamefinished screen to show score
@@ -194,7 +197,9 @@ else
 
     private async Task SubmitQuiz()
     {
+        Console.WriteLine($"guesses count: {guesses.Count}, guessId: {guesses[0].GuessId}, guessword: {guesses[0].Guess}");
         var response = await _httpClient.PutAsJsonAsync($"api/game/gameresult", new { gameId = quizData2.gameId, guesses = guesses });
+        score = await response.Content.ReadFromJsonAsync<int>();
         gameFinnished = true;
         // Add code to get data to present in score screen
     }
