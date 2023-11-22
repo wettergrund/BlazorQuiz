@@ -1,48 +1,47 @@
-# Quiz
-
+# BlazorQuiz
 ## Intro
-
 This is a fullstack quiz application using Blazor.
 The program handles all logic serverside and presents the data to the razor-client via our shared-viewmodels to minimize data exposure.
-We've decided to do abstraction-layers on serverside in the Services folder example:
+We've decided to do abstraction-layers on serverside in the Services folder example: 
 Controller -> IGameService -> GameService.
 
 ## Setup
+ - Blazor / ASP.NET Core
+ - Authorization with JWT
+ - Entity Framework Core
+ - Code First with SQL Server
 
-- Blazor / ASP.NET Core
-- Authorization with JWT
-- Entity Framework Core
-- Code First with SQL Server
 
 ## The Code
-
-| **Services**   | **Breakdown**                                                 |
-| -------------- | ------------------------------------------------------------- |
-| GameService    | Game logic                                                    |
-| MediaService   | Media logic, upload and retrive img/vid-files                 |
-| ProfileService | User page logic (ex. display data on who played your quizzes) |
-
+|**Services**|**Breakdown**|
+|-|-|
+|GameService|Game logic|
+|MediaService|Media logic, upload and retrive img/vid-files|
+|ProfileService|User page logic (ex. display data on who played your quizzes)|
 <br>
 
-| **Data Base**   | **Breakdown**                                                                                             |
-| --------------- | --------------------------------------------------------------------------------------------------------- |
-| ApplicationUser | Table contains all user data so we can implement autorization with JWT                                    |
-| QuizModel       | Table contains set atributes for quiz and has a collection to questions and FK to User                    |
-| QuestionModel   | Questions is created for specific quiz so there are FK to QuizModel and also <br> have a FK to MediaModel |
-| UserQuizModel   | Is created when a user joins a quiz. This contains the score of user. FK tu Quiz and User                 |
-
+|**Data Base**|**Breakdown**|
+|-|-|
+|ApplicationUser|Table contains all user data so we can implement autorization with JWT|
+|QuizModel|Table contains set atributes for quiz and has a collection to questions and FK to User|
+|QuestionModel|Questions is created for specific quiz so there are FK to QuizModel and also <br> have a FK to MediaModel|
+|UserQuizModel|Is created when a user joins a quiz. This contains the score of user. FK tu Quiz and User|
 <br>
 
-| **Shared/ViewModels**    | **Breakdown**                                                   |
-| ------------------------ | --------------------------------------------------------------- |
-| GameQuizViewModel        | Quiz data to play quiz. Including list of questions             |
-| QuestionSharedViewModel  | Questions data. This is embeded in GameQuizViewModel            |
-| GuessCheckViewModel      | Guess data. Send to be verified and api returns bool            |
-| UserCreatedQuizViewModel | UserName and QuizId. Used to print list of quizzes              |
-| SubmitQuizViewModel      | Sends finished game. UserQuizID and list of GuessCheckViewModel |
-| NewMediaViewModel        | Upload media via URL                                            |
-| NewQuestionViewModel     | Create new question. Contains imgURL, question and answer       |
-| NewQuizViewModel         | Create new quiz. Contains atributes and NewQuestionViewModel    |
+
+|**Shared/ViewModels**|**Breakdown**|
+|-|-|
+|GameQuizViewModel|Quiz data to play quiz. Including list of questions|
+|QuestionSharedViewModel|Questions data. This is embeded in GameQuizViewModel|
+|GuessCheckViewModel|Guess data. Send to be verified and api returns bool|
+|UserCreatedQuizViewModel|UserName and QuizId. Used to print list of quizzes|
+|SubmitQuizViewModel|Sends finished game. UserQuizID and list of GuessCheckViewModel|
+|NewMediaViewModel|Upload media via URL|
+|NewQuestionViewModel|Create new question. Contains imgURL, question and answer|
+|NewQuizViewModel|Create new quiz. Contains atributes and NewQuestionViewModel|
+
+## Database Diagram
+![blazorquiz (1)](https://github.com/wettergrund/BlazorQuiz/assets/112638774/ff41f5d3-715d-4ea2-867b-b88f6d6a737c)
 
 ## Contributors
 
