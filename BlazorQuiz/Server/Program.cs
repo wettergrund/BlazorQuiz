@@ -3,6 +3,7 @@ using BlazorQuiz.Server.Models;
 using BlazorQuiz.Server.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 namespace BlazorQuiz
 {
