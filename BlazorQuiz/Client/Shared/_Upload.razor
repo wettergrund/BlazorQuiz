@@ -42,6 +42,14 @@
         var response = await _httpClient.PostAsync("api/media", content);
         var json = await response.Content.ReadAsStringAsync();
 
+        if ((int)response.StatusCode != 200)
+        {
+            Snackbar.Add(json, Severity.Error);
+
+            return;
+        }
+       
+
         var mediaObject = JsonSerializer.Deserialize<NewMediaViewModel>(json);
 
 
