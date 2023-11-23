@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,4 +12,10 @@ namespace BlazorQuiz.Shared.ViewModels
         public string Path { get; set; }
 
     }
+    public class NewMediaViewModel
+    {
+        public string guid { get; set; }
+        public string path { get; set; }
+    }
+
 }

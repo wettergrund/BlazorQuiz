@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace BlazorQuiz.Shared.ViewModels
 {
-    public class NewMediaViewModel
+    public class UserCreatedQuizViewModel
     {
-        public string guid { get; set; }
-        public string path { get; set; }
+        public string PublicId { get; set; }
+        public string Name { get; set; }
     }
 }

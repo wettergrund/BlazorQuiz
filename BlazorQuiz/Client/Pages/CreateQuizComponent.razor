@@ -44,14 +44,30 @@
             <MudPaper Width="500px" Class="d-block pa-12">
                 <MudExpansionPanels>
 
+
                     @options.QuizTitle
                     @foreach (var item in quizList)
                     {
-                        <MudExpansionPanel @key="item.Question" Text="@item.Question" MaxHeight="150">
+                        <MudExpansionPanel @key="item.Question" Text="" MaxHeight="150">
+                                <TitleContent>
+                                    <div class="d-flex">
+                                      
+                                            <MudIcon Icon="@Icons.Material.Filled.QuestionMark" Color="@Color.Primary" Class="mr-3"></MudIcon>
+
+                                        <MudText><strong>@item.Question</strong></MudText>
+                                    </div>
+                                </TitleContent>
+                                <ChildContent>
+                     
                             Correct answer: <b>
                             @item.CorrectAnswer
+                                @if (!string.IsNullOrEmpty(item.QuizImageFullPath) && item.QuizImageFullPath.Contains("image"))
+                                    {
 
-                            </b>
+                                        <MudImage Src="@item.QuizImageFullPath" Alt="@($"Image for question: {item.Question}")" Elevation="25" Class="rounded-lg d-block mt-3" Width="100"  />
+                                    }
+                                </b>
+                                </ChildContent>
                         </MudExpansionPanel>
                          
              
@@ -64,8 +80,8 @@
     
             </MudPaper>
         </MudItem>
-       
-        <MudButton Disabled="@(!options.HasQuestion)" Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateQuiz">Create Quiz</MudButton>
+
+            <MudButton Disabled="@(!options.HasQuestion || string.IsNullOrEmpty(options.QuizTitle))" Variant="Variant.Filled" Color="Color.Primary" OnClick="CreateQuiz">Create Quiz</MudButton>
         }
     </MudGrid>
 </div>
@@ -75,12 +91,16 @@
     private MudTheme Theme = new MudTheme();
     private NewQuestionViewModel quiz = new NewQuestionViewModel();
     private List<NewQuestionViewModel> quizList = new List<NewQuestionViewModel>();
-
+    private QuizOptions options = new QuizOptions(); //Set of settings to make the quiz work
     MudForm? form;
+    string url = "";
 
-    private async Task HandleAddQuestion(NewQuestionViewModel newQuestion)
+    
+
+    //Hanler for child component 
+    private void HandleAddQuestion(NewQuestionViewModel newQuestion)
     {
-        var newQ = new NewQuestionViewModel()
+        var questionClone = new NewQuestionViewModel
             {
                 Question = newQuestion.Question,
                 Answer1 = newQuestion.Answer1,
@@ -88,37 +108,39 @@
                 Answer3 = newQuestion.Answer3,
                 Answer4 = newQuestion.Answer4,
                 QuizImageUrl = newQuestion.QuizImageUrl,
+                QuizImageFullPath = newQuestion.QuizImageFullPath,
                 CorrectAnswer = newQuestion.Answer1
 
             };
 
-        quizList.Add(newQ);
+        quizList.Add(questionClone);
         options.HasQuestion = true;
         options.ResetToDefault();
         StateHasChanged();
     }
 
 
-    QuizOptions options = new QuizOptions(); //Set of settings to make the quiz work
-    string url;
-
-
-
-    protected override async Task OnInitializedAsync()
+    private async Task AddQuestion()
     {
+        var newQuestion = new NewQuestionViewModel(quiz);
 
-    }
 
-    private void OnFileUploaded(string guid)
-    {
-        //Helper function to work with _Upload
+        if (options.MediaQuestion)
+        {
+            newQuestion.QuizImageUrl = quiz.QuizImageUrl;
+        }
 
-        quiz.QuizImageUrl = guid;
+        quizList.Add(newQuestion);
+
+        await form.ResetAsync();
+        options.HasQuestion = true;
+        options.ResetToDefault();
+        quiz.ResetToDefault();
         StateHasChanged();
+
     }
 
-
-
+   
     private async Task CreateQuiz()
     {
         var newQuiz = new NewQuizViewModel()
@@ -146,26 +168,7 @@
 
     }
 
-    private async Task AddQuestion()
-    {
-        var newQuestion = new NewQuestionViewModel(quiz);
 
-
-        if (options.MediaQuestion)
-        {
-            newQuestion.QuizImageUrl = quiz.QuizImageUrl;
-        }
-
-        quizList.Add(newQuestion);
-
-        await form.ResetAsync();
-        options.HasQuestion = true;
-        StateHasChanged();
-
-        options.ResetToDefault();
-        quiz.ResetToDefault();
-
-    }
 
     private async Task ResetGame()
     {
@@ -175,6 +178,7 @@
     }
 
 
+    //Help function to calculate time in seconds /minutes
     private string ReturnTimer(double seconds)
     {
         string time;

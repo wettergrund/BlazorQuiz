@@ -51,6 +51,7 @@ namespace BlazorQuiz.Server.Services
         }
         private async Task<string> SaveFileAsync(IFormFile file, string fileName)
         {
+            //Save file to disk and return relative path
             string imageDir = "wwwroot/images";
             string videoDir = "wwwroot/videos";
             string destDir = imageDir;

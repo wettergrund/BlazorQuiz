@@ -16,20 +16,13 @@ namespace BlazorQuiz.Server.Controllers
 
             _gameService = gameService;
         }
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetUserQuiz(string id)
-        {
-            // Get a specific game
 
-            //Get a game
-            var quizViewModel = await _gameService.GetQuizByPublicIdAsync(id);
 
-            return Ok(quizViewModel);
-        }
+
+
         [HttpPost("create")]
         public async Task<IActionResult> PostQuiz([FromBody] NewQuizViewModel quiz)
         {
-
             //Created a new quiz
             var newQuiz = await _gameService.CreateQuizAsync(quiz.Title, quiz.Questions, quiz.Timer, UserId);
 
@@ -42,20 +35,35 @@ namespace BlazorQuiz.Server.Controllers
             return Ok(quizViewModel);
         }
 
+
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetUserQuiz(string id)
+        {
+            // Return a userquiz by it's id
+            var quizViewModel = await _gameService.GetQuizByPublicIdAsync(id);
+
+            return Ok(quizViewModel);
+        }
+
+
         [HttpPost("newgame/{quizId}")]
         public async Task<IActionResult> PostNewGame(string quizId)
         {
 
-            //Create a new game.
-            //Use Identity to bind to creator user
+            //Create a new game for a user that join a quiz.
 
             var newGame = await _gameService.CreateNewGameAsync(quizId, UserId);
 
             return Ok(newGame);
         }
+
+
         [HttpPost("guess")]
         public async Task<IActionResult> GuessCheck([FromBody] GuessCheckViewModel guess)
         {
+            //Validate if a guess is correct
+
             var isCorrect = await _gameService.CheckGuess(guess);
 
             return Ok(isCorrect);
@@ -64,14 +72,7 @@ namespace BlazorQuiz.Server.Controllers
         [HttpPut("gameresult")]
         public async Task<IActionResult> UpdateGame([FromBody] SubmitQuizViewModel quiz)
         {
-
-
-            /* 1. Get UserGuiz(Game) by gameID 
-             * 2. Get all questions with QuizRefId == UserGuiz.QuizRefPublicId
-             * 3. Verify number of guesses == questions.
-             * 4. Foreach guess, verify guesses and update score for gameId
-             */
-
+            //Used to submit a finished game
 
             //Find UserQuiz and questions related to Quiz Id
             var userGame = _gameService.FindUserQuiz(quiz.gameId);

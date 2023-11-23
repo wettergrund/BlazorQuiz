@@ -18,7 +18,7 @@
 @code {
 
     [Parameter]
-    public EventCallback<string> OnFileUpload { get; set; }
+    public EventCallback<NewMediaViewModel> OnFileUpload { get; set; }
     [Parameter]
     public bool IsActive { get; set; }
 
@@ -42,10 +42,18 @@
         var response = await _httpClient.PostAsync("api/media", content);
         var json = await response.Content.ReadAsStringAsync();
 
-        var myObject = JsonSerializer.Deserialize<NewMediaViewModel>(json);
+        if ((int)response.StatusCode != 200)
+        {
+            Snackbar.Add(json, Severity.Error);
+
+            return;
+        }
+       
+
+        var mediaObject = JsonSerializer.Deserialize<NewMediaViewModel>(json);
 
 
-        await OnFileUpload.InvokeAsync(myObject.guid);
+        await OnFileUpload.InvokeAsync(mediaObject);
 
 
 
