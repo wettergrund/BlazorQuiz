@@ -5,9 +5,12 @@ namespace BlazorQuiz.Server.Services
 {
     public interface IProfileService
     {
+        // [HttpGet("mygames")]
         Task<List<UserCreatedQuizViewModel>> GetUserGamesAsync(string userId);
+        // [HttpGet("myquizzes")]
         Task<List<QuizModel>> GetUserCreatedGamesAsync(string userId);
-        Task<List<UserQuizViewModel>> GetDataOnGameAsync(string publicId);
+        // [HttpGet("myquizzes/{publicid}")]
+        Task<List<UserQuizViewModel>> GetDataOnGameAsync(string publicId, string username);
 
     }
 }

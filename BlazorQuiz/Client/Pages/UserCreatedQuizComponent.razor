@@ -10,10 +10,9 @@
             <MudPaper Width="500px">
                 <MudList Clickable="true">
                     @foreach (var item in createdQuizList){
-                        <MudListItem>
+                        <MudListItem Style="background: #594ae2ff; color:white; border: solid 1px black; margin-bottom: 5px;">
                             <MudLink Class="d-flex align-center justify-center" Href='@string.Format($"/myquizzes/{item.PublicId.ToString()}")' Color=Color.Inherit Underline="Underline.None">@item.Name</MudLink>
                         </MudListItem>
-                        <MudDivider />
                     }
                 </MudList>
             </MudPaper>
@@ -23,7 +22,6 @@
 
 @code {
     List<UserCreatedQuizViewModel>? createdQuizList = new List<UserCreatedQuizViewModel>();
-    UserCreatedQuizViewModel? selected = new UserCreatedQuizViewModel();
 
     protected override async Task OnInitializedAsync()
     {
