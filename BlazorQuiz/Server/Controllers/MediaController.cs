@@ -18,6 +18,7 @@ namespace BlazorQuiz.Server.Controllers
             _mediaService = mediaService;
         }
 
+
         [HttpGet("{guid}")]
         public async Task<IActionResult> GetMedia(Guid guid)
         {
@@ -36,6 +37,7 @@ namespace BlazorQuiz.Server.Controllers
         [HttpPost]
         public async Task<IActionResult> UploadMediaAsync([FromForm] IFormFile file)
         {
+            //Upload video or image
 
             int maxMb = 13;
             long megaByte = 1024 * 1024;
@@ -49,7 +51,7 @@ namespace BlazorQuiz.Server.Controllers
                 return BadRequest("File size exceeds the allowable limit.");
             }
 
-            if (string.IsNullOrEmpty(extension) || !permittedFileTypes.Contains(extension) /*|| !file.ContentType.StartsWith("image/")*/)
+            if (string.IsNullOrEmpty(extension) || !permittedFileTypes.Contains(extension))
             {
                 return BadRequest("Invalid file type. Submitted filetype: " + file.ContentType);
             }

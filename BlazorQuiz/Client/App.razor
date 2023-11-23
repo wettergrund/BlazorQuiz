@@ -1,4 +1,7 @@
-﻿<CascadingAuthenticationState>
+﻿@inject NavigationManager _navigationManager
+
+
+<CascadingAuthenticationState>
     <Router AppAssembly="@typeof(App).Assembly">
         <Found Context="routeData">
             <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
@@ -18,8 +21,15 @@
         <NotFound>
             <PageTitle>Not found</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
+                <p role="alert">Sorry, there's nothing at the page you tried to access: </p>
+                <p>
+                    <b>
+                        @_navigationManager.Uri.Replace(_navigationManager.BaseUri,"")
+                    </b>
+                </p>
             </LayoutView>
         </NotFound>
     </Router>
 </CascadingAuthenticationState>
+
+

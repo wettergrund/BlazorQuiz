@@ -53,11 +53,12 @@
         await OnAddQuestion.InvokeAsync(quiz);
         await form.ResetAsync();
     }
-    private void OnFileUploaded(string guid)
+    private void OnFileUploaded(NewMediaViewModel media)
     {
         //Helper function to work with _Upload
 
-        quiz.QuizImageUrl = guid;
+        quiz.QuizImageUrl = media.guid;
+        quiz.QuizImageFullPath = media.path;
         StateHasChanged();
     }
 }
