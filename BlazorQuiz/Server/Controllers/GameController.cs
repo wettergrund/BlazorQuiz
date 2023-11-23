@@ -1,7 +1,6 @@
 ﻿using BlazorQuiz.Server.Services;
 using BlazorQuiz.Shared.ViewModels;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
 namespace BlazorQuiz.Server.Controllers
 {
@@ -9,12 +8,12 @@ namespace BlazorQuiz.Server.Controllers
     [ApiController]
     public class GameController : BaseController
     {
-   
+
         private readonly IGameService _gameService;
 
         public GameController(IGameService gameService)
         {
-          
+
             _gameService = gameService;
         }
         [HttpGet("{id}")]
@@ -63,7 +62,7 @@ namespace BlazorQuiz.Server.Controllers
         }
 
         [HttpPut("gameresult")]
-        public async Task<IActionResult> UpdateGame ([FromBody] SubmitQuizViewModel quiz)
+        public async Task<IActionResult> UpdateGame([FromBody] SubmitQuizViewModel quiz)
         {
 
 
@@ -83,18 +82,20 @@ namespace BlazorQuiz.Server.Controllers
 
 
             //Make sure sent in questions are equal to questions related to quiz
-            if (!userGuesses.Equals(quizGuesses)) {
+            if (!userGuesses.Equals(quizGuesses))
+            {
 
                 return BadRequest("Number of guesses does not match");
 
             }
-            else if (userGuesses.Equals(quizGuesses)) {
+            else if (userGuesses.Equals(quizGuesses))
+            {
 
                 //Update score and return game info.
-                var updateScore = await _gameService.FinishedGame(userGame , quiz.guesses);
+                var updateScore = await _gameService.FinishedGame(userGame, quiz.guesses);
 
                 return Ok(updateScore.Score);
-            
+
             }
 
 

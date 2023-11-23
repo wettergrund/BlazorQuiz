@@ -5,7 +5,6 @@
 @using System.Net.Http.Headers;
 @using BlazorQuiz.Shared.ViewModels;
 @inject HttpClient _httpClient
-@inject ILocalStorageService _localStorage 
 
 
 @if (gameFinnished == true)
@@ -14,11 +13,11 @@
         <p style="padding-top:200px">Final score: @score</p>
     </div>
 }
-else if (quizData2.questions != null)
+else if (quizData.questions != null)
 {
     <div class="ma-5 d-flex align-center justify-center">
         <MudGrid Class="d-flex align-center justify-center" Style="max-width: 600px">
-            <MudText Typo="Typo.h4">@quizData2.title</MudText>
+            <MudText Typo="Typo.h4">@quizData.title</MudText>
           
             <MudItem xs="12" Class="d-flex align-center justify-center">
                 <MudGrid>
@@ -33,7 +32,7 @@ else if (quizData2.questions != null)
 
 
                             <MudCardContent>
-                                <MudText Class="d-flex align-center justify-center" Typo="Typo.h5">@quizData2.questions[count].Question</MudText>
+                                <MudText Class="d-flex align-center justify-center" Typo="Typo.h5">@quizData.questions[count].Question</MudText>
                             </MudCardContent>
                         </MudCard>
                     </MudItem>
@@ -47,16 +46,16 @@ else if (quizData2.questions != null)
             <MudItem xs="12" Class="d-flex align-center justify-center" Style="max-width: 80vw">
                 <MudGrid>
                     <MudItem xs="6" Class="d-flex align-center justify-center">
-                        <MudButton OnClick="() => SubmitAnswer(quizData2.questions[count].Answer1, 1)" Variant="Variant.Filled" Color="@alt1" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer1</MudButton>
+                        <MudButton OnClick="() => SubmitAnswer(quizData.questions[count].Answer1, 1)" Variant="Variant.Filled" Color="@alt1" Class="d-flex align-center justify-center mud-width-full py-8">@quizData.questions[count].Answer1</MudButton>
                     </MudItem>
                     <MudItem xs="6" Class="d-flex align-center justify-center">
-                        <MudButton OnClick="() => SubmitAnswer(quizData2.questions[count].Answer2, 2)" Variant="Variant.Filled" Color="@alt2" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer2</MudButton>
+                        <MudButton OnClick="() => SubmitAnswer(quizData.questions[count].Answer2, 2)" Variant="Variant.Filled" Color="@alt2" Class="d-flex align-center justify-center mud-width-full py-8">@quizData.questions[count].Answer2</MudButton>
                     </MudItem>
                     <MudItem xs="6" Class="d-flex align-center justify-center">
-                        <MudButton OnClick="() => SubmitAnswer(quizData2.questions[count].Answer3, 3)" Variant="Variant.Filled" Color="@alt3" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer3</MudButton>
+                        <MudButton OnClick="() => SubmitAnswer(quizData.questions[count].Answer3, 3)" Variant="Variant.Filled" Color="@alt3" Class="d-flex align-center justify-center mud-width-full py-8">@quizData.questions[count].Answer3</MudButton>
                     </MudItem>
                     <MudItem xs="6" Class="d-flex align-center justify-center">
-                        <MudButton OnClick="() => SubmitAnswer(quizData2.questions[count].Answer4, 4)" Variant="Variant.Filled" Color="@alt4" Class="d-flex align-center justify-center mud-width-full py-8">@quizData2.questions[count].Answer4</MudButton>
+                        <MudButton OnClick="() => SubmitAnswer(quizData.questions[count].Answer4, 4)" Variant="Variant.Filled" Color="@alt4" Class="d-flex align-center justify-center mud-width-full py-8">@quizData.questions[count].Answer4</MudButton>
                     </MudItem>
                 </MudGrid>
             </MudItem>
@@ -78,9 +77,10 @@ else
     [Parameter]
     public string id { get; set; }
 
-    GameQuizViewModel quizData2 = new GameQuizViewModel();
-    List<MediaViewModel> media = new List<MediaViewModel>();
-
+    GameQuizViewModel quizData = new GameQuizViewModel(); // contains quiz data
+    List<MediaViewModel> media = new List<MediaViewModel>(); // contains media data
+    GuessCheckViewModel guess = new GuessCheckViewModel(); // used to check guess then be added to guesses list
+    List<GuessCheckViewModel> guesses = new List<GuessCheckViewModel>(); // used to store game data and
 
     bool gameFinnished = false;
     bool isCorrect;
@@ -91,27 +91,23 @@ else
     int currentTimer;
     bool stoppTimer = false;
 
-    MudBlazor.Color success = Color.Success;
-    MudBlazor.Color wrong = Color.Error;
-    MudBlazor.Color primary = Color.Primary;
-
+    // Colors for buttons
+    MudBlazor.Color success = Color.Success; // green
+    MudBlazor.Color wrong = Color.Error; // red
+    MudBlazor.Color primary = Color.Primary; // purple (default)
     MudBlazor.Color alt1 { get; set; } = Color.Primary;
     MudBlazor.Color alt2 { get; set; } = Color.Primary;
     MudBlazor.Color alt3 { get; set; } = Color.Primary;
     MudBlazor.Color alt4 { get; set; } = Color.Primary;
 
-    GuessCheckViewModel guess = new GuessCheckViewModel();
-    List<GuessCheckViewModel> guesses = new List<GuessCheckViewModel>();
-
-
     protected override async Task OnInitializedAsync()
     {
-        // var response = await _httpClient.GetAsync($"api/game/{id}");
         var response = await _httpClient.PostAsJsonAsync($"api/game/newgame/{id}", id);
-        quizData2 = await response.Content.ReadFromJsonAsync<GameQuizViewModel>();
+        quizData = await response.Content.ReadFromJsonAsync<GameQuizViewModel>();
 
-        var questions = quizData2.questions;
+        var questions = quizData.questions;
         var mediaClone = new MediaViewModel();
+        
         foreach (var question in questions)
         {
             var newMedia = question.QuizMediaUrl;
@@ -123,6 +119,7 @@ else
                         Path = ""
                     };
             }
+
             else
             {
             var mediaRes = await _httpClient.GetAsync($"api/media/{newMedia}");
@@ -135,34 +132,21 @@ else
                 
             }
             media.Add(mediaClone);
-      
-
-
-            
-
-
         }
-
         StartCountdown();
-
     }
-
-
 
     private async Task StartCountdown()
     {
-        if (quizData2.timer > 0)
+        if (quizData.timer > 0)
         {
             hasTimer = true;
-            timerStart = quizData2.timer * 10;
-            currentTimer = quizData2.timer * 10;
-
+            timerStart = quizData.timer * 10;
+            currentTimer = quizData.timer * 10;
 
             do
             {
                 await Task.Delay(100);
-
-
 
                 currentTimer -= 1;
                 StateHasChanged();
@@ -171,41 +155,32 @@ else
 
             if (currentTimer == 0)
             {
-
                 await SubmitAnswer();
             }
-
-
-
         }
-
     }
 
     private async Task SubmitAnswer(string answer = "", int alternativ = -1)
     {
-        //Sets guess and call DB to check answer
+        // Sets guess variables
         stoppTimer = true;
         guess.Guess = answer;
-        guess.GuessId = quizData2.questions[count].Id;
-
+        guess.GuessId = quizData.questions[count].Id;
 
         if (hasTimer)
         {
             guess.Seconds = CalculatedTimeElapsed();
         }
-
+        // Call DB to check answer
         await GuessCheck(guess);
-        // Green if correct, red if wrong
-
 
         if(alternativ == -1)
         {
-
             await TimeOut();
         }
         else
-        {
-        
+        {      
+            // Green if correct, red if wrong
             if (isCorrect == true){
                 await CorrectColor(alternativ);
                 StateHasChanged();
@@ -215,16 +190,14 @@ else
                 await WrongColor(alternativ);          
                 StateHasChanged();
             }
-
+            //Delay to veiw result then reset colour
             await Task.Delay(3000);
             await ResetColor(alternativ);
             StateHasChanged();
         }
-        //Delay to veiw result then reset colour
         
-
         //Check if there are more questions left. If not submit score to DB.
-        if (count < quizData2.questions.Count-1)
+        if (count < quizData.questions.Count-1)
         {
             count++;
             ResetTimer();
@@ -270,6 +243,7 @@ else
         StartCountdown();
     }
 
+    // Set color green for selected answer
     private async Task CorrectColor(int alternativ)
     {
         await Task.Run(() =>
@@ -292,6 +266,7 @@ else
         });
     }
 
+    // Set color red for selected answer
     private async Task WrongColor(int alternativ)
     {
         await Task.Run(() =>
@@ -314,6 +289,7 @@ else
         });
     }
 
+    // Reset color for selected answer
     private async Task ResetColor(int alternativ)
     {
         await Task.Run(() =>
@@ -336,6 +312,8 @@ else
         });
     }
 
+    // Checks guess and return bool.
+    // Then add guess with score to guesses (List<GuessCheckViewModel>)
     private async Task GuessCheck(GuessCheckViewModel guess)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/game/guess", guess);
@@ -349,13 +327,12 @@ else
         guesses.Add(guessClone);
     }
 
+    // Submits quiz, gamestate set to finnished and score will show.
     private async Task SubmitQuiz()
     {
-        Console.WriteLine($"guesses count: {guesses.Count}, guessId: {guesses[0].GuessId}, guessword: {guesses[0].Guess}");
-
         SubmitQuizViewModel submitQuiz = new()
             {
-                gameId = quizData2.gameId,
+                gameId = quizData.gameId,
                 guesses = this.guesses
             };
 
@@ -363,6 +340,5 @@ else
         score = await response.Content.ReadFromJsonAsync<int>();
         gameFinnished = true;
         StateHasChanged();
-        // Add code to get data to present in score screen
     }
 }

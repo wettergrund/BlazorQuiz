@@ -1,10 +1,9 @@
 ﻿using BlazorQuiz.Server.Data;
 using BlazorQuiz.Server.Models;
-using BlazorQuiz.Shared.ViewModels;
-using BlazorQuiz.Server.ViewModels;
-
-using Microsoft.EntityFrameworkCore;
 using BlazorQuiz.Server.Models.ViewModels;
+using BlazorQuiz.Server.ViewModels;
+using BlazorQuiz.Shared.ViewModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorQuiz.Server.Services
 {
@@ -20,6 +19,7 @@ namespace BlazorQuiz.Server.Services
             _mediaService = mediaService;
 
         }
+
         public async Task<QuizViewModel> CreateNewGameAsync(string quizId, string userId)
         {
             // Use the DbHelper or an equivalent repository to find the quiz based on ID
@@ -85,7 +85,7 @@ namespace BlazorQuiz.Server.Services
             // Create new questions and bind them to the quiz.
             foreach (var question in questions)
             {
-               
+
 
                 var newQuestion = new QuestionModel
                 {
@@ -102,10 +102,10 @@ namespace BlazorQuiz.Server.Services
 
                     var media = await _mediaService.GetMediaByIdAsync(Guid.Parse(question.QuizImageUrl));
                     int mediaID = media.Id;
-                
+
                     newQuestion.MediaRefId = mediaID;
 
-                
+
                 }
 
                 // Add the new question to the context
@@ -157,7 +157,7 @@ namespace BlazorQuiz.Server.Services
         {
             var correctAnswer = _context.QuestionModels.Where(questions => questions.Id == guess.GuessId).Select(question => question.Answer1).Single();
 
-            if(correctAnswer == guess.Guess)
+            if (correctAnswer == guess.Guess)
             {
                 return true;
             }
@@ -166,20 +166,21 @@ namespace BlazorQuiz.Server.Services
                 return false;
             }
         }
+
         public async Task<UserQuizModel> FinishedGame(UserQuizModel quiz, List<GuessCheckViewModel> guesses)
         {
             //throw new NotImplementedException();
 
             int score = 0;
 
-            foreach(var guess in guesses)
+            foreach (var guess in guesses)
             {
                 bool guessStatus = await CheckGuess(guess);
 
-                if(guessStatus == true)
+                if (guessStatus == true)
                 {
                     score += 1000;
-                    if(guess.Seconds != null)
+                    if (guess.Seconds != null)
                     {
                         score -= guess.Seconds;
                     }
@@ -215,11 +216,12 @@ namespace BlazorQuiz.Server.Services
             return game;
         }
 
-        public List<QuestionModel> FindQuestionsByQuizRef(string quizRef) { 
-            
+        public List<QuestionModel> FindQuestionsByQuizRef(string quizRef)
+        {
+
             var questions = _context.QuestionModels.Where(q => q.QuizRefId == quizRef).ToList();
             return questions;
-        
+
         }
     }
 }
