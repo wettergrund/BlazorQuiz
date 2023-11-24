@@ -5,7 +5,7 @@
         <MudText Typo="Typo.h6">Share the below code with a friend.</MudText>
         <MudText>They can take you quiz by using the <b>Join quiz</b> option on the front page.</MudText>
 
-        <MudTextField @ref="Ref" T="string" Label="Quiz share ID" Variant="Variant.Outlined" Text="@ShareId" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Api" OnAdornmentClick="@(() => Ref.SelectAsync())" />
+        <MudTextField @ref="Ref" T="string" Label="Share Code" Variant="Variant.Outlined" Text="@ShareId" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Api" OnAdornmentClick="@(() => Ref.SelectAsync())" />
     </MudPaper>
 </MudItem>
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ResetGame">Create another quiz</MudButton>

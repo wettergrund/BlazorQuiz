@@ -11,8 +11,10 @@
                 <MudList Clickable="true">
                     @foreach (var item in createdQuizList){
                         <MudListItem Style="background: #594ae2ff; color:white; border: solid 1px black; margin-bottom: 5px;">
-                            <MudLink Class="d-flex align-center justify-center" Href='@string.Format($"/myquizzes/{item.PublicId.ToString()}")' Color=Color.Inherit Underline="Underline.None">@item.Name</MudLink>
+                            <MudLink  Class="d-flex align-center justify-center" Href='@string.Format($"/myquizzes/{item.PublicId.ToString()}")' Color=Color.Inherit Underline="Underline.None">@item.Name</MudLink>
+                            
                         </MudListItem>
+                          
                     }
                 </MudList>
             </MudPaper>
