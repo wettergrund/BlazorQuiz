@@ -36,6 +36,15 @@ namespace BlazorQuiz
             builder.Services.AddScoped<IProfileService, ProfileService>();
 
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.WithOrigins("https://blazorquizserver.azurewebsites.net/")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+            });
 
             var app = builder.Build();
 
@@ -67,6 +76,7 @@ namespace BlazorQuiz
             app.MapRazorPages();
             app.MapControllers();
             app.MapFallbackToFile("index.html");
+            app.UseCors();
 
             app.Run();
         }

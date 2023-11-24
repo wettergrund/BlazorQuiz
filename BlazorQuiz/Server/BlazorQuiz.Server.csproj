@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <Folder Include="Data\Migrations\" />
-	<Folder Include="wwwroot\images\" />
+    <Folder Include="wwwroot\" />
   </ItemGroup>
 
 </Project>
