@@ -5,12 +5,20 @@ The program handles all logic serverside and presents the data to the razor-clie
 We've decided to do abstraction-layers on serverside in the Services folder example: 
 Controller -> IGameService -> GameService.
 
+
+
 ## Setup
  - Blazor / ASP.NET Core
  - Authorization with JWT
  - Entity Framework Core
  - Code First with SQL Server
 
+## Key Features
+- ❓ User can create quizzes and let other users take the quiz
+- 🖼 A quiz question can contain a picture, video or just text
+- ⌛ User can set time limit for the quiz (timer applies to each question)
+  - User score is affected by the time they take to answer
+- 🥇 User can list their quizzes and see who have answered them
 
 ## The Code
 |**Services**|**Breakdown**|

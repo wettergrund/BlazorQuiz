@@ -17,7 +17,7 @@
         <MudText Typo="Typo.h4">New Quiz</MudText>
         @if (!String.IsNullOrEmpty(options.QuizGuid)){
 
-        <ShareGame OnReset="ResetGame" Url="@url" />
+        <ShareGame OnReset="ResetGame" ShareId="@shareId" />
 
         }
         else
@@ -94,7 +94,7 @@
     private QuizOptions options = new QuizOptions(); //Set of settings to make the quiz work
     MudForm? form;
     string url = "";
-
+    string shareId = "";
     
 
     //Hanler for child component 
@@ -165,6 +165,7 @@
         var model = await response.Content.ReadFromJsonAsync<NewQuizViewModel>();
         options.QuizGuid = model.PublicId;
         url = $"{_nav.BaseUri}game/{model.PublicId}";
+        shareId = model.PublicId;
 
     }
 
