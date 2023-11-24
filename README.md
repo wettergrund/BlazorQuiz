@@ -5,6 +5,11 @@ The program handles all logic serverside and presents the data to the razor-clie
 We've decided to do abstraction-layers on serverside in the Services folder example: 
 Controller -> IGameService -> GameService.
 
+<div align="center">
+ 
+![showcase](https://github.com/wettergrund/BlazorQuiz/assets/50584818/25c4ea3b-f7b5-48da-bd8d-ae081ab7e49f)
+
+</div>
 
 
 ## Setup
@@ -17,7 +22,7 @@ Controller -> IGameService -> GameService.
 - ❓ User can create quizzes and let other users take the quiz
 - 🖼 A quiz question can contain a picture, video or just text
 - ⌛ User can set time limit for the quiz (timer applies to each question)
-  - User score is affected by the time they take to answer
+  - User score is affected by elapsed time
 - 🥇 User can list their quizzes and see who have answered them
 
 ## The Code
