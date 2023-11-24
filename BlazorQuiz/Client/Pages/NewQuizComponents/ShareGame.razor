@@ -2,14 +2,17 @@
 <MudItem xs="12" Class="d-flex align-center justify-center">
     <MudPaper Width="500px" Class="d-block pa-12">
         <MudText Typo="Typo.h5">Quiz successfully created!</MudText>
-        <MudTextField @ref="Ref" T="string" Label="Quiz URL" Variant="Variant.Outlined" Text="@Url" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Api" OnAdornmentClick="@(() => Ref.SelectAsync())" />
+        <MudText Typo="Typo.h6">Share the below code with a friend.</MudText>
+        <MudText>They can take you quiz by using the <b>Join quiz</b> option on the front page.</MudText>
+
+        <MudTextField @ref="Ref" T="string" Label="Share Code" Variant="Variant.Outlined" Text="@ShareId" Adornment="Adornment.End" AdornmentIcon="@Icons.Material.Filled.Api" OnAdornmentClick="@(() => Ref.SelectAsync())" />
     </MudPaper>
 </MudItem>
 <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="ResetGame">Create another quiz</MudButton>
 
 @code {
     [Parameter] public EventCallback OnReset { get; set; }
-    [Parameter] public string Url { get; set; }
+    [Parameter] public string ShareId { get; set; }
     public MudTextField<string> Ref { get; set; }
 
 

@@ -47,7 +47,10 @@ namespace BlazorQuiz.Server.Services
         public async Task<List<UserQuizViewModel>> GetDataOnGameAsync(string publicId, string username)
         {
             // Get userquizmodels on quizId
-            var dataGames = _context.UserQuizModels.Where(q => q.QuizRefPublicId == publicId).ToList();
+            var dataGames = _context.UserQuizModels
+                .Where(q => q.QuizRefPublicId == publicId)
+                .OrderByDescending(x => x.Score)
+                .ToList();
             var viewModels = new List<UserQuizViewModel>();
 
             //Set data to viewmodel of score and name for user on this quiz to list.
