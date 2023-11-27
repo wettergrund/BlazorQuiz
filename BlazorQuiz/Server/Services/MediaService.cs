@@ -1,4 +1,6 @@
-﻿using BlazorQuiz.Server.Data;
+﻿using Azure.Storage.Blobs;
+using Azure.Storage.Blobs.Models;
+using BlazorQuiz.Server.Data;
 using BlazorQuiz.Server.Models;
 using BlazorQuiz.Server.Models.ViewModels;
 
@@ -7,9 +9,14 @@ namespace BlazorQuiz.Server.Services
     public class MediaService : IMediaService
     {
         private readonly ApplicationDbContext _context;
-        public MediaService(ApplicationDbContext context)
+        private readonly IConfiguration _config;
+
+        private readonly BlobServiceClient _blobStorageClient;
+
+        public MediaService(ApplicationDbContext context, IConfiguration configuration)
         {
             _context = context;
+            _config = configuration;
         }
         public async Task<MediaModel> GetMediaByIdAsync(Guid guid)
         {
@@ -20,6 +27,7 @@ namespace BlazorQuiz.Server.Services
 
         public async Task<NewMediaViewModel> UploadMediaAsync(IFormFile file, string userId)
         {
+
 
 
             var mediaGuid = Guid.NewGuid();
@@ -80,19 +88,30 @@ namespace BlazorQuiz.Server.Services
 
             }
 
-            Directory.CreateDirectory(fileName);
+            Directory.CreateDirectory(destDir);
 
             var filePath = Path.Combine(Directory.GetCurrentDirectory(), destDir, fileName);
             // Save the file
-            using (var stream = new FileStream(filePath, FileMode.Create))
+
+            string blobConnectionString = _config["BlobConnectionString"];
+
+            BlobServiceClient blob = new BlobServiceClient(blobConnectionString);
+            var containerClient = blob.GetBlobContainerClient("blob");
+            var blobClient = containerClient.GetBlobClient(fileName);
+
+            using (var stream = file.OpenReadStream())
             {
-                await file.CopyToAsync(stream);
+                var response = await blobClient.UploadAsync(stream, new BlobUploadOptions()
+                {
+                    HttpHeaders = new BlobHttpHeaders() { ContentType = file.ContentType  }
+           
+                });
+
             }
 
-            destDir = destDir.Replace("wwwroot/", "");
-            var returnPath = Path.Combine(destDir, fileName);
 
-            returnPath = returnPath.Replace("\\", "/");
+            var returnPath = fileName;
+
 
 
             return returnPath;

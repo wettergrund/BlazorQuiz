@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 
+
 namespace BlazorQuiz
 {
     public class Program
@@ -19,7 +20,7 @@ namespace BlazorQuiz
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = false)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddIdentityServer()
@@ -34,6 +35,8 @@ namespace BlazorQuiz
             builder.Services.AddScoped<IMediaService, MediaService>();
             builder.Services.AddScoped<IGameService, GameService>();
             builder.Services.AddScoped<IProfileService, ProfileService>();
+
+      
 
 
             builder.Services.AddCors(options =>

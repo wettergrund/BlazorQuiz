@@ -24,9 +24,11 @@ else if (quizData.questions != null)
                     <MudItem xs="12" Class="d-flex align-center justify-center">
                         <MudCard Style="width: 80vw; max-width: 600px; overflow: hidden; ">
 
-                            @if(@media[count].Path.Contains("image")){
-                                <MudCardMedia Image="@media[count].Path" Height="300" />
-                            }else if(@media[count].Path.Contains("video")){
+                            @if(@media[count].Type.Contains("image")){
+                                <MudCardMedia Image="@($"{mediaUrl}{media[count].Path}")" Height="300" />
+                            }
+                            else if (@media[count].Type.Contains("video"))
+                            {
                               <_PlayVideo VideoPath="@media[count].Path" VideoType="@media[count].Type" ShowVideo=true/>
                             }
 
@@ -90,6 +92,7 @@ else
     int timerStart;
     int currentTimer;
     bool stoppTimer = false;
+    string mediaUrl = "https://jwstoragelabs.blob.core.windows.net/blob/";
 
     // Colors for buttons
     MudBlazor.Color success = Color.Success; // green
